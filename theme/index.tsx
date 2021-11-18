@@ -13,8 +13,6 @@ import {
 
 import NProgress from "components/Layout/nprogress";
 
-import NotifCard from "components/NotifCard";
-
 //
 import shape from "./shape";
 import palette from "./palette";
@@ -24,7 +22,6 @@ import breakpoints from "./breakpoints";
 import GlobalStyles from "./globalStyles";
 import componentsOverride from "./overrides";
 import shadows, { customShadows } from "./shadows";
-import { MobileView, TabletView, isDesktop } from "react-device-detect";
 
 // ----------------------------------------------------------------------
 
@@ -45,8 +42,6 @@ export default function ThemeConfig({
 }: {
   children: JSX.Element | JSX.Element[];
 }) {
-  const router = useRouter();
-
   // const themeOptions = useMemo(
   //   () => ({
   //     palette,
