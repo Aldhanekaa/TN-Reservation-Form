@@ -30,7 +30,7 @@ export default function DataSiswa({
   levelSiswa: number;
 }) {
   const [daftarSiswa, setDaftarSiswa] = React.useState<Array<SlotDataI>>([]);
-  const [gender, setGender] = React.useState<"m" | "f">("m");
+  const [gender] = React.useState<"m" | "f">("m");
   const [fetchingSiswa, setFetchingSiswa] = React.useState<boolean>(false);
 
   const gradeOptions = grades.map((option) => {
