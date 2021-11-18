@@ -1,9 +1,66 @@
+@font-face {
+  font-family: outfitFont;
+  src: url(/outfit/fonts/webfonts/Outfit-Thin.woff);
+  font-weight: 100;
+}
+
+@font-face {
+  font-family: outfitFont;
+  src: url(/outfit/fonts/webfonts/Outfit-ExtraLight.woff);
+  font-weight: 200;
+}
+@font-face {
+  font-family: outfitFont;
+  src: url(/outfit/fonts/webfonts/Outfit-Light.woff);
+  font-weight: 300;
+}
+@font-face {
+  font-family: outfitFont;
+  src: url(/outfit/fonts/webfonts/Outfit-Light.woff);
+  font-weight: lighter;
+}
+@font-face {
+  font-family: outfitFont;
+  src: url(/outfit/fonts/webfonts/Outfit-Regular.woff);
+  font-weight: 400;
+}
+@font-face {
+  font-family: outfitFont;
+  src: url(/outfit/fonts/webfonts/Outfit-Medium.woff);
+  font-weight: 500;
+}
+@font-face {
+  font-family: outfitFont;
+  src: url(/outfit/fonts/webfonts/Outfit-Bold.woff);
+  font-weight: 600;
+}
+@font-face {
+  font-family: outfitFont;
+  src: url(/outfit/fonts/webfonts/Outfit-Bold.woff);
+  font-weight: bold;
+}
+@font-face {
+  font-family: outfitFont;
+  src: url(/outfit/fonts/webfonts/Outfit-ExtraBold.woff);
+  font-weight: 800;
+}
+@font-face {
+  font-family: outfitFont;
+  src: url(/outfit/fonts/webfonts/Outfit-ExtraBold.woff);
+  font-weight: bolder;
+}
+@font-face {
+  font-family: outfitFont;
+  src: url(/outfit/fonts/webfonts/Outfit-Black.woff);
+  font-weight: 900;
+}
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: outfitFont, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif !important;
+  font-weight: lighter;
 }
 
 a {
