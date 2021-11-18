@@ -140,7 +140,7 @@ export default function ProminentAppBar() {
               style={{ color: "#8692A6" }}
               startIcon={<ArrowBackIosNewIcon />}
             >
-              Small
+              Back
             </Button>
 
             <Stack direction="column">
