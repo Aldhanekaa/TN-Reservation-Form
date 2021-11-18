@@ -2,7 +2,8 @@ import * as React from "react";
 
 import HeaderBanner from "./headerbar";
 
-import { Container, Stack, Paper, Typography } from "@mui/material";
+import { Container, Stack, Paper, Typography, Button } from "@mui/material";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useWindowWidth } from "@react-hook/window-size/throttled";
 import { isTablet } from "react-device-detect";
 import { MHidden } from "components/@material-extend";
@@ -12,7 +13,7 @@ import Logo from "./logo";
 import { styled } from "@mui/material/styles";
 import YouTube from "react-youtube";
 
-const SectionStyle = styled(Paper)(({ theme }) => ({
+const SectionStyle = styled(Paper)(() => ({
   width: "100%",
   maxWidth: "50%",
   display: "flex",
@@ -33,6 +34,19 @@ const ContentStyle = styled("div")(({ theme }) => ({
   flexDirection: "column",
   justifyContent: "center",
   padding: theme.spacing(12, 5),
+}));
+
+const StepSection = styled("div")(({ theme }) => ({
+  margin: "auto",
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  padding: theme.spacing(0, 5),
+  position: "absolute",
+  top: 30,
+  right: 0,
+  zIndex: 999,
+  width: "100%",
 }));
 
 const RootStyle = styled(Page)(({ theme }) => ({
@@ -118,7 +132,26 @@ export default function ProminentAppBar() {
           </SectionStyle>
         </MHidden>
 
-        <ContentStyle>asdasd</ContentStyle>
+        <ContentStyle style={{ position: "relative" }}>
+          {" "}
+          <StepSection>
+            <Button
+              size="small"
+              style={{ color: "#8692A6" }}
+              startIcon={<ArrowBackIosNewIcon />}
+            >
+              Small
+            </Button>
+
+            <Stack direction="column">
+              <h4 style={{ fontWeight: 300, color: "#BDBDBD" }}>STEP 01/03</h4>
+              <p style={{ fontWeight: 700, color: "#8692A6" }}>
+                Data Pendamping
+              </p>
+            </Stack>
+          </StepSection>
+          asdasd
+        </ContentStyle>
       </RootStyle>
     </>
   );

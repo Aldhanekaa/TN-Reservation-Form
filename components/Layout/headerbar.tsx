@@ -6,9 +6,7 @@ import Image from "next/image";
 import ExhibitionTransparentLogo from "public/adx2021kidstextonly-02.png";
 import { isMobile } from "react-device-detect";
 
-import { useRouter } from "next/router";
-
-import { styled, alpha } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 
 // Throttled values
 import { useWindowWidth } from "@react-hook/window-size/throttled";
@@ -46,8 +44,6 @@ function LogoAndExhibitionTitle() {
 
 export default function ProminentAppBar() {
   const windowWidth = useWindowWidth();
-
-  const router = useRouter();
 
   if (!isMobile) {
     return <p></p>;
