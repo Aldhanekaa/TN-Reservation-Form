@@ -6,7 +6,6 @@ import {
   FormHelperText,
   Box,
   Autocomplete,
-  CircularProgress,
 } from "@mui/material";
 import { FormikErrors } from "formik";
 import { FormSchemaI } from "./FormSchema";
@@ -15,7 +14,6 @@ import dataSiswa, { SlotDataI } from "data/mainDatas";
 
 export default function DataSiswa({
   errors,
-  getFieldProps,
   setFieldValue,
   grade,
   namaLengkapSiswa,
