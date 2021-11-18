@@ -1,10 +1,6 @@
-import { useEffect } from "react";
-
-import { useRouter } from "next/router";
-
 import PropTypes from "prop-types";
 // material
-import { CssBaseline, Container } from "@mui/material/";
+import { CssBaseline } from "@mui/material/";
 import {
   ThemeProvider,
   StyledEngineProvider as StylesProvider,
