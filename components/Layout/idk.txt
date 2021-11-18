@@ -142,3 +142,29 @@ else if (windowWidth >= 520 && windowWidth <= 1024) {
       </Container>
     );
   }
+
+
+                    <TextField
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={id}
+                      fullWidth
+                      label={label}
+                      {...getFieldProps(input_name)}
+                      error={Boolean(
+                        // @ts-ignore
+                        touched[input_name] && errors[input_name]
+                      )}
+                      // @ts-ignore
+                      helperText={
+                        /* eslint-disable */
+                        // @ts-ignore
+                        touched[input_name]
+                          ? // @ts-ignore
+                            errors[input_name]
+                            ? // @ts-ignore
+                              errors[input_name]
+                            : helperText && helperText
+                          : helperText && helperText
+                        /* eslint-enable */
+                      }
+                    />

@@ -5,13 +5,16 @@ import HeaderBanner from "./headerbar";
 import { Container, Stack, Paper, Typography, Button } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useWindowWidth } from "@react-hook/window-size/throttled";
-import { isTablet } from "react-device-detect";
+import { isTablet, isDesktop } from "react-device-detect";
 import { MHidden } from "components/@material-extend";
 import Page from "components/Page";
 import Logo from "./logo";
 
 import { styled } from "@mui/material/styles";
 import YouTube from "react-youtube";
+import Form from "../form";
+
+import FormSteps from "components/form/FormSteps";
 
 const SectionStyle = styled(Paper)(() => ({
   width: "100%",
@@ -33,8 +36,14 @@ const ContentStyle = styled("div")(({ theme }) => ({
   minHeight: "100vh",
   flexDirection: "column",
   justifyContent: "center",
-  padding: theme.spacing(12, 5),
+  padding: theme.spacing(isDesktop ? 12 : 2, isDesktop ? 5 : 2),
 }));
+
+function t() {
+  if (isDesktop) return { top: 30 };
+
+  return { top: 30 };
+}
 
 const StepSection = styled("div")(({ theme }) => ({
   margin: "auto",
@@ -43,10 +52,11 @@ const StepSection = styled("div")(({ theme }) => ({
   justifyContent: "space-between",
   padding: theme.spacing(0, 5),
   position: "absolute",
-  top: 30,
+  ...t(),
   right: 0,
   zIndex: 999,
   width: "100%",
+  marginBottom: isDesktop ? 0 : "100px",
 }));
 
 const RootStyle = styled(Page)(({ theme }) => ({
@@ -56,17 +66,17 @@ const RootStyle = styled(Page)(({ theme }) => ({
 }));
 
 export default function ProminentAppBar() {
+  const [currentStep, setStep] = React.useState<number>(0);
+  const [isSubmitting, setSubmitting] = React.useState<boolean>(false);
+
   const sectionRef = React.useRef<HTMLDivElement>();
   const windowWidth = useWindowWidth();
-
-  console.log(sectionRef);
-  console.log(windowWidth);
 
   return (
     <>
       <Container
         sx={{
-          position: "fixed",
+          position: "relative",
           left: 0,
           right: 0,
           top: 0,
@@ -90,7 +100,7 @@ export default function ProminentAppBar() {
         )}{" "}
       </Container>
 
-      <RootStyle>
+      <RootStyle sx={{ mt: isDesktop ? 0 : 5 }}>
         <MHidden width="mdDown">
           <SectionStyle>
             <div
@@ -137,20 +147,43 @@ export default function ProminentAppBar() {
           <StepSection>
             <Button
               size="small"
-              style={{ color: "#8692A6" }}
+              style={{
+                color: currentStep == 0 || isSubmitting ? "#C4CDD5" : "#8692A6",
+                cursor:
+                  currentStep == 0
+                    ? "not-allowed"
+                    : isSubmitting
+                    ? "wait"
+                    : "pointer",
+              }}
               startIcon={<ArrowBackIosNewIcon />}
+              onClick={() => {
+                if (!isSubmitting) setStep(currentStep - 1);
+              }}
+              disabled={currentStep == 0 || isSubmitting}
             >
-              Back
+              Kembali
             </Button>
 
-            <Stack direction="column">
-              <h4 style={{ fontWeight: 300, color: "#BDBDBD" }}>STEP 01/03</h4>
+            <Stack direction="column" alignItems="end">
+              <h4 style={{ fontWeight: 300, color: "#BDBDBD" }}>
+                STEP {currentStep + 1}/{FormSteps.length + 1}
+              </h4>
               <p style={{ fontWeight: 700, color: "#8692A6" }}>
-                Data Pendamping
+                {currentStep == FormSteps.length
+                  ? "Konfirmasi"
+                  : FormSteps[currentStep].label}
               </p>
             </Stack>
           </StepSection>
-          asdasd
+          {/* {(isMobile || isTablet) && ( */}
+          <Container maxWidth={`${isDesktop ? "sm" : "sm"}`}>
+            <Form
+              setStep={setStep}
+              setSubmitting={setSubmitting}
+              currentStep={currentStep}
+            />
+          </Container>
         </ContentStyle>
       </RootStyle>
     </>

@@ -14,49 +14,30 @@ const FormSteps: Array<{
   }>;
 }> = [
   {
-    label: "Bisakah anda memberi informasi mengenai diri anda?",
-    label_desc: "Data ini memudahkan kami untuk mengenali Anda.",
+    label: "Informasi Pendamping",
+    label_desc: "Data ini memudahkan kami untuk mengenali pendamping.",
     step: 0,
     inputs: [
-      { label: "Full Name*", input_name: "fullName", show: true },
-      { label: "Username*", input_name: "username", show: true },
-      { label: "Birth Day", input_name: "birthDate", show: false },
-    ],
-  },
-  {
-    label: "Gender",
-    label_desc: "Data ini memudahkan kami untuk mengenali Anda.",
-
-    step: 1,
-    inputs: [{ label: "Gender", input_name: "gender", show: false }],
-  },
-  {
-    label: "Status di TechnoNatura",
-    label_desc: "Apa status mu di TechnoNatura?",
-
-    step: 2,
-    inputs: [
-      { label: "Role", input_name: "roleInTechnoNatura", show: false },
-      { label: "gradeInNumber", input_name: "gradeInNumber", show: false },
-      { label: "startPeriod", input_name: "startPeriod", show: false },
-      { label: "branch", input_name: "branch", show: false },
-
-      { label: "staffRole", input_name: "staffRole", show: false },
-    ],
-  },
-  {
-    label: "Privacy Info",
-    label_desc: "We keep this data secure.",
-
-    step: 3,
-    inputs: [
+      { label: "Nama Pendamping*", input_name: "namaPendamping", show: true },
+      { label: "Nomor WA Pendamping*", input_name: "nomorWa", show: false },
       {
-        label: "Email*",
-        input_name: "email",
-        show: true,
-        helperText: "We need your email to serve reset password service",
+        label: "Status Pendamping*",
+        input_name: "statusPendamping",
+        show: false,
       },
-      { label: "Password", input_name: "password", show: false },
+    ],
+  },
+  {
+    label: "Informasi Siswa",
+    label_desc: "Data ini digunakan untuk mendata siswa yang ikut.",
+    step: 1,
+    inputs: [
+      { label: "Level Siswa*", input_name: "levelSiswa", show: false },
+      {
+        label: "Nama Lengkap Siswa*",
+        input_name: "namaLengkapSiswa",
+        show: false,
+      },
     ],
   },
 ];
