@@ -82,7 +82,7 @@ export default function ProminentAppBar() {
             <div
               style={{
                 position: "absolute",
-                top: 10,
+                top: 20,
                 left: 0,
                 zIndex: 999,
                 transform: "scale(0.7)",
