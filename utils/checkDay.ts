@@ -35,7 +35,7 @@ export default function checkDay() {
 
     console.log(exhibitionDay.date.split(" ")[1]);
 
-    const exhibitionDaySessions = exhibitionDay.sessions;
+    // const exhibitionDaySessions = exhibitionDay.sessions;
 
     const now = Date.now();
     const month = new Date(now).getMonth();
