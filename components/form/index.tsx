@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import {
   Typography,
   TextField,
@@ -8,10 +9,15 @@ import {
   MenuItem,
   FormHelperText,
   Box,
+  Stack,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import FormSchema, { FormSchemaI } from "./FormSchema";
 import { useFormik, Form, FormikProvider } from "formik";
+import { isDesktop } from "react-device-detect";
+
+import QRCodeGenerator from "qrcode";
+
 import FormSteps from "./FormSteps";
 import SubmitButton from "./SubmitButton";
 import DataSiswa from "./dataSiswa";
@@ -31,11 +37,14 @@ export default function MainForm({
   setStep,
   currentStep,
   setSubmitting,
+  setSuccessSubmitted,
 }: {
   setStep: (input: number) => void;
   currentStep: number;
   setSubmitting: (input: boolean) => void;
+  setSuccessSubmitted: (input: boolean) => void;
 }) {
+  const [qrCodeImageURL, setQRCodeImageURL] = useState<undefined | string>();
   const formik = useFormik<FormSchemaI>({
     initialValues: {
       namaPendamping: "",
@@ -45,11 +54,27 @@ export default function MainForm({
       namaLengkapSiswa: "",
     },
     validationSchema: FormSchema,
-    onSubmit(_values, help) {
+    async onSubmit(_values, help) {
       console.log("sdf");
+
+      const qrcode = await QRCodeGenerator.toDataURL("d", {
+        color: {
+          dark: "#3F5060",
+          light: "#fff",
+        },
+      });
+
       setTimeout(() => {
         help.setSubmitting(false);
       }, 1000);
+
+      const success = new Audio(
+        "https://res.cloudinary.com/dh3vfns2y/video/upload/v1637328818/01%20Hero%20Sounds/hero_decorative-celebration-02_filr7e.wav"
+      );
+      success.play();
+
+      setSuccessSubmitted(true);
+      console.log(setQRCodeImageURL(qrcode));
 
       return;
     },
@@ -71,6 +96,62 @@ export default function MainForm({
   useEffect(() => {
     setSubmitting(isSubmitting);
   }, [isSubmitting]);
+
+  if (qrCodeImageURL) {
+    return (
+      <>
+        {isDesktop && (
+          <>
+            <img
+              src="/celebrationOWO.png"
+              style={{ position: "absolute", top: 0, left: -30, zIndex: -1 }}
+              width="auto"
+              height="auto"
+            />
+            <img
+              src="/celebrationUWU.png"
+              style={{ position: "absolute", bottom: 0, right: 0, zIndex: -1 }}
+              width="auto"
+              height="auto"
+            />
+          </>
+        )}
+
+        <Typography
+          style={{ color: "#3F5060", fontSize: "30px", fontWeight: 900 }}
+        >
+          Thank you for submitting in our event!
+        </Typography>
+        <Typography style={{ color: "#8692A6", fontSize: "18px" }}>
+          Thank you for your interest!
+        </Typography>
+        <Stack direction="row" alignItems="center" sx={{ mt: "10px" }}>
+          <Box sx={{ mb: 1 }}>
+            <Image src={qrCodeImageURL} width={250} height={250} />
+          </Box>
+          <Box sx={{ mb: 1 }}>
+            <Typography style={{ color: "#3F5060", fontSize: "18px" }}>
+              Nama Pendamping <br />{" "}
+              <b style={{ fontSize: "24px" }}>{values.namaPendamping}</b>
+            </Typography>
+            <Typography style={{ color: "#647585", fontSize: "18px" }}>
+              Nama siswa: {values.namaLengkapSiswa}
+            </Typography>
+            <Typography
+              sx={{ mt: 4 }}
+              style={{ color: "#7B8E9F", fontSize: "14px" }}
+            >
+              Fri, 03 Dec 2021. 09:00 am - 10:00 am
+            </Typography>
+          </Box>
+        </Stack>
+        <Typography sx={{ color: "#8692A6", fontSize: "18px" }}>
+          Give the QR Code above to Event Staff to be confirmed when you go to
+          the event at Fri, 03 Dec 2021. 09:00 am - 10:00 am
+        </Typography>
+      </>
+    );
+  }
 
   return (
     <FormikProvider value={formik}>

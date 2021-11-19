@@ -22,7 +22,7 @@ const SectionStyle = styled(Paper)(() => ({
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
-  backgroundImage: "url(/banner.webp)",
+  backgroundImage: "url(/banner.png)",
   borderRadius: 0,
   backgroundRepeat: "no-repeat",
   backgroundSize: "cover",
@@ -30,20 +30,14 @@ const SectionStyle = styled(Paper)(() => ({
 }));
 const ContentStyle = styled("div")(({ theme }) => ({
   width: "100%",
-  maxWidth: "50%",
+  maxWidth: isDesktop ? "50%" : "100%",
   margin: "auto",
   display: "flex",
   minHeight: "100vh",
   flexDirection: "column",
   justifyContent: "center",
-  padding: theme.spacing(isDesktop ? 12 : 2, isDesktop ? 5 : 2),
+  padding: theme.spacing(!isDesktop ? 10 : 2, isDesktop ? 5 : 5),
 }));
-
-function t() {
-  if (isDesktop) return { top: 30 };
-
-  return { top: 30 };
-}
 
 const StepSection = styled("div")(({ theme }) => ({
   margin: "auto",
@@ -52,7 +46,7 @@ const StepSection = styled("div")(({ theme }) => ({
   justifyContent: "space-between",
   padding: theme.spacing(0, 5),
   position: "absolute",
-  ...t(),
+  top: 30,
   right: 0,
   zIndex: 999,
   width: "100%",
@@ -68,6 +62,8 @@ const RootStyle = styled(Page)(({ theme }) => ({
 export default function ProminentAppBar() {
   const [currentStep, setStep] = React.useState<number>(0);
   const [isSubmitting, setSubmitting] = React.useState<boolean>(false);
+  const [successSubmitted, setSuccessSubmitted] =
+    React.useState<boolean>(false);
 
   const sectionRef = React.useRef<HTMLDivElement>();
   const windowWidth = useWindowWidth();
@@ -144,44 +140,51 @@ export default function ProminentAppBar() {
 
         <ContentStyle style={{ position: "relative" }}>
           {" "}
-          <StepSection>
-            <Button
-              size="small"
-              style={{
-                color: currentStep == 0 || isSubmitting ? "#C4CDD5" : "#8692A6",
-                cursor:
-                  currentStep == 0
-                    ? "not-allowed"
-                    : isSubmitting
-                    ? "wait"
-                    : "pointer",
-              }}
-              startIcon={<ArrowBackIosNewIcon />}
-              onClick={() => {
-                if (!isSubmitting) setStep(currentStep - 1);
-              }}
-              disabled={currentStep == 0 || isSubmitting}
-            >
-              Kembali
-            </Button>
+          {!successSubmitted && (
+            <StepSection>
+              <Button
+                size="small"
+                style={{
+                  color:
+                    currentStep == 0 || isSubmitting ? "#C4CDD5" : "#8692A6",
+                  cursor:
+                    currentStep == 0
+                      ? "not-allowed"
+                      : isSubmitting
+                      ? "wait"
+                      : "pointer",
+                }}
+                startIcon={<ArrowBackIosNewIcon />}
+                onClick={() => {
+                  if (!isSubmitting) setStep(currentStep - 1);
+                }}
+                disabled={currentStep == 0 || isSubmitting}
+              >
+                Kembali
+              </Button>
 
-            <Stack direction="column" alignItems="end">
-              <h4 style={{ fontWeight: 300, color: "#BDBDBD" }}>
-                STEP {currentStep + 1}/{FormSteps.length + 1}
-              </h4>
-              <p style={{ fontWeight: 700, color: "#8692A6" }}>
-                {currentStep == FormSteps.length
-                  ? "Konfirmasi"
-                  : FormSteps[currentStep].label}
-              </p>
-            </Stack>
-          </StepSection>
+              <Stack direction="column" alignItems="end">
+                <h4 style={{ fontWeight: 300, color: "#BDBDBD" }}>
+                  STEP {currentStep + 1}/{FormSteps.length + 1}
+                </h4>
+                <p style={{ fontWeight: 700, color: "#8692A6" }}>
+                  {currentStep == FormSteps.length
+                    ? "Konfirmasi"
+                    : FormSteps[currentStep].label}
+                </p>
+              </Stack>
+            </StepSection>
+          )}
           {/* {(isMobile || isTablet) && ( */}
-          <Container maxWidth={`${isDesktop ? "sm" : "sm"}`}>
+          <Container
+            maxWidth={`${isDesktop ? "sm" : "sm"}`}
+            sx={{ paddingBottom: "40px", paddingTop: "50px" }}
+          >
             <Form
               setStep={setStep}
               setSubmitting={setSubmitting}
               currentStep={currentStep}
+              setSuccessSubmitted={setSuccessSubmitted}
             />
           </Container>
         </ContentStyle>

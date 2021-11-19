@@ -35,10 +35,14 @@ export default function DataSiswa({
 
   const gradeOptions = grades.map((option) => {
     return {
-      firstLetter: option <= 6 ? "MI" : "MTS",
-      value: option,
+      firstLetter: option.grade <= 6 ? "MI" : "MTS",
+      value: option.grade,
     };
   });
+
+  // const gradeData = (value) =>
+  //   grades.findIndex((grade) => grade.grade == value).day;
+
   const daftarSiswaOptions = daftarSiswa.map((option) => {
     return {
       firstLetter: option.gender == "m" ? "Male" : "Female",
@@ -84,13 +88,39 @@ export default function DataSiswa({
           renderInput={(params) => (
             <TextField placeholder="Level" {...params} />
           )}
+          getOptionDisabled={(option) => option.value == 1}
           renderOption={(props, option) => (
             <Box
               component="li"
               sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
               {...props}
             >
-              {option.value}
+              {option.value} — Tersisa{" "}
+              <b style={{ marginLeft: 4 }}>
+                {Math.floor(Math.random() * 35) + 1} Slot!
+              </b>
+              {/* {
+                exhibitionDays[
+                  // @ts-ignore
+                  grades.find((grade) => grade.grade == option.value).day - 1
+                ].date
+              }
+              ,{" "}
+              {
+                sessions[
+                  // @ts-ignore
+                  grades.find((grade) => grade.grade == option.value).session -
+                    1
+                ].start
+              }{" "}
+              -{" "}
+              {
+                sessions[
+                  // @ts-ignore
+                  grades.find((grade) => grade.grade == option.value).session -
+                    1
+                ].end
+              } */}
             </Box>
           )}
         />

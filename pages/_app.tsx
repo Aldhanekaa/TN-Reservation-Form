@@ -6,6 +6,7 @@ import { AppProps } from "next/app";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import ThemeConfig from "../theme";
 import createEmotionCache from "../components/createEmotionCache";
+import checkDay from "utils/checkDay";
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -15,6 +16,7 @@ interface MyAppProps extends AppProps {
 }
 
 export default function MyApp(props: MyAppProps) {
+  checkDay();
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   return (
     <CacheProvider value={emotionCache}>
