@@ -10,17 +10,21 @@ import {
   FormHelperText,
   Box,
   Stack,
+  Button,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import FormSchema, { FormSchemaI } from "./FormSchema";
 import { useFormik, Form, FormikProvider } from "formik";
 import { isDesktop } from "react-device-detect";
+import html2canvas from "html2canvas";
 
 import QRCodeGenerator from "qrcode";
 
 import FormSteps from "./FormSteps";
 import SubmitButton from "./SubmitButton";
 import DataSiswa from "./dataSiswa";
+import ReserveSeat from "utils/reserveSeat";
+import { getSession, getSessionByLevel } from "utils/getSession";
 
 const StyledInputElement = styled(TextField)`
   background: transparent;
@@ -32,6 +36,25 @@ const StyledInputElement = styled(TextField)`
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.11);
   }
 `;
+
+function PrintDiv(div: any) {
+  html2canvas(div).then((canvas) => {
+    var myImage = canvas.toDataURL();
+    downloadURI(myImage, "ADX2021-QRCode.png");
+  });
+}
+
+function downloadURI(uri: string, name: string) {
+  var link = document.createElement("a");
+
+  link.download = name;
+  link.href = uri;
+  link.click();
+  //after creating link you should delete dynamic link
+  //clearDynamicLink(link);
+}
+
+const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export default function MainForm({
   setStep,
@@ -50,31 +73,40 @@ export default function MainForm({
       namaPendamping: "",
       nomorWa: "",
       statusPendamping: "",
+      // @ts-ignore
       levelSiswa: Math.floor(Math.random() * 9) + 1,
       namaLengkapSiswa: "",
+      id: "",
     },
     validationSchema: FormSchema,
     async onSubmit(_values, help) {
       console.log("sdf");
 
-      const qrcode = await QRCodeGenerator.toDataURL("d", {
-        color: {
-          dark: "#3F5060",
-          light: "#fff",
-        },
-      });
+      const reservedSeat = await ReserveSeat(_values);
+      console.log(reservedSeat);
+      if (reservedSeat.status == "success") {
+        const qrcode = await QRCodeGenerator.toDataURL(values.id, {
+          color: {
+            dark: "#3F5060",
+            light: "#fff",
+          },
+        });
 
-      setTimeout(() => {
+        const success = new Audio(
+          "https://res.cloudinary.com/dh3vfns2y/video/upload/v1637328818/01%20Hero%20Sounds/hero_decorative-celebration-02_filr7e.wav"
+        );
+        success.play();
+
+        setSuccessSubmitted(true);
+        setQRCodeImageURL(qrcode);
+
         help.setSubmitting(false);
-      }, 1000);
-
-      const success = new Audio(
-        "https://res.cloudinary.com/dh3vfns2y/video/upload/v1637328818/01%20Hero%20Sounds/hero_decorative-celebration-02_filr7e.wav"
-      );
-      success.play();
+        PrintDiv(document.querySelector(".QRCode-Card"));
+        return;
+      }
 
       setSuccessSubmitted(true);
-      console.log(setQRCodeImageURL(qrcode));
+      help.setSubmitting(false);
 
       return;
     },
@@ -118,36 +150,108 @@ export default function MainForm({
         )}
 
         <Typography
-          style={{ color: "#3F5060", fontSize: "30px", fontWeight: 900 }}
+          style={{
+            color: "#3F5060",
+            fontSize: "24px",
+            fontFamily: "outfitFont",
+          }}
         >
-          Thank you for submitting in our event!
+          Terima Kasih Telah Mengisi Formulir di Acara TechnoNatura Art
+          Exhibition 2021!
         </Typography>
-        <Typography style={{ color: "#8692A6", fontSize: "18px" }}>
-          Thank you for your interest!
+        <Typography
+          style={{
+            color: "#8692A6",
+            fontSize: "18px",
+            fontFamily: "outfitFont",
+            fontWeight: 500,
+          }}
+        >
+          Terima kasih atas minat Anda!
         </Typography>
-        <Stack direction="row" alignItems="center" sx={{ mt: "10px" }}>
+        <Stack
+          direction={isDesktop ? `row` : "column"}
+          alignItems="center"
+          sx={{ mt: "10px" }}
+          className="QRCode-Card"
+        >
           <Box sx={{ mb: 1 }}>
             <Image src={qrCodeImageURL} width={250} height={250} />
           </Box>
-          <Box sx={{ mb: 1 }}>
-            <Typography style={{ color: "#3F5060", fontSize: "18px" }}>
+          <Box sx={{ padding: isDesktop ? "0" : "5px 25px" }}>
+            <Typography
+              style={{
+                color: "#3F5060",
+                fontSize: "15px",
+                fontFamily: "outfitFont",
+                fontWeight: 500,
+              }}
+            >
               Nama Pendamping <br />{" "}
               <b style={{ fontSize: "24px" }}>{values.namaPendamping}</b>
             </Typography>
-            <Typography style={{ color: "#647585", fontSize: "18px" }}>
-              Nama siswa: {values.namaLengkapSiswa}
+            <Typography
+              style={{
+                color: "#647585",
+                fontSize: "15px",
+                fontFamily: "outfitFont",
+                fontWeight: 500,
+              }}
+            >
+              Nama siswa <br />{" "}
+              <b style={{ fontSize: "18px" }}>{values.namaLengkapSiswa}</b>
             </Typography>
             <Typography
-              sx={{ mt: 4 }}
-              style={{ color: "#7B8E9F", fontSize: "14px" }}
+              sx={{ mt: isDesktop ? 4 : 2, mb: 4 }}
+              style={{
+                color: "#7B8E9F",
+                fontSize: "14px",
+                fontFamily: "outfitFont",
+                fontWeight: 500,
+              }}
             >
-              Fri, 03 Dec 2021. 09:00 am - 10:00 am
+              {
+                // @ts-ignore
+                getSession(getSessionByLevel(String(values.levelSiswa)))
+              }
             </Typography>
           </Box>
         </Stack>
-        <Typography sx={{ color: "#8692A6", fontSize: "18px" }}>
-          Give the QR Code above to Event Staff to be confirmed when you go to
-          the event at Fri, 03 Dec 2021. 09:00 am - 10:00 am
+        <Button
+          onClick={() => PrintDiv(document.querySelector(".QRCode-Card"))}
+          fullWidth
+          variant="contained"
+          sx={{
+            color: "#fff",
+            mb: 2,
+            fontFamily: "outfitFont",
+          }}
+        >
+          Download QRCode
+        </Button>
+        <Typography
+          sx={{
+            color: "#8692A6",
+            fontSize: "18px",
+            fontFamily: "outfitFont",
+            fontWeight: 300,
+          }}
+        >
+          Berikan Kode QR di atas kepada Staf Acara untuk dikonfirmasi ketika
+          Anda pergi ke TechnoNatura saat{" "}
+          {
+            days[
+              new Date(
+                // @ts-ignore
+                getSession(getSessionByLevel(String(values.levelSiswa)), true)
+              ).getDay()
+            ]
+          }
+          ,{" "}
+          {
+            // @ts-ignore
+            getSession(getSessionByLevel(String(values.levelSiswa)))
+          }
         </Typography>
       </>
     );
@@ -167,11 +271,22 @@ export default function MainForm({
               <Box sx={{ mb: 1 }} key={step}>
                 <Typography
                   variant="h3"
-                  style={{ color: "#3F5060", fontSize: "30px" }}
+                  style={{
+                    color: "#3F5060",
+                    fontSize: "30px",
+                    fontFamily: "outfitFont",
+                  }}
                 >
                   {label}
                 </Typography>
-                <Typography style={{ color: "#8692A6", fontSize: "18px" }}>
+                <Typography
+                  style={{
+                    color: "#8692A6",
+                    fontSize: "18px",
+                    fontFamily: "outfitFont",
+                    fontWeight: 700,
+                  }}
+                >
                   {label_desc}
                 </Typography>
               </Box>
@@ -188,12 +303,18 @@ export default function MainForm({
                     return "";
                   }
                   return (
-                    <FormControl key={input_name} fullWidth sx={{ mt: 3 }}>
+                    <FormControl
+                      key={input_name}
+                      fullWidth
+                      sx={{ mt: 3, fontFamily: "outfitFont" }}
+                    >
                       <Typography
                         style={{
                           // @ts-ignore
                           color: errors[input_name] ? "#E2403D" : "#696F79",
                           fontSize: "16px",
+                          fontFamily: "outfitFont",
+                          fontWeight: 500,
                         }}
                       >
                         {label}
@@ -202,7 +323,7 @@ export default function MainForm({
                         id="outlined-textarea"
                         placeholder="Nama"
                         multiline
-                        sx={{ mt: 1, width: "100%" }}
+                        sx={{ mt: 1, width: "100%", fontFamily: "outfitFont" }}
                         {...getFieldProps(input_name)}
                         // @ts-ignore
                         error={Boolean(errors[input_name])}
@@ -210,7 +331,11 @@ export default function MainForm({
                       />
                       <FormHelperText
                         variant="outlined"
-                        sx={{ color: "#E2403D" }}
+                        sx={{
+                          color: "#E2403D",
+                          fontFamily: "outfitFont",
+                          fontWeight: 500,
+                        }}
                       >
                         {
                           // @ts-ignore
@@ -232,6 +357,8 @@ export default function MainForm({
                 style={{
                   color: errors.nomorWa ? "#E2403D" : "#696F79",
                   fontSize: "16px",
+                  fontFamily: "outfitFont",
+                  fontWeight: 500,
                 }}
               >
                 Nomor WA Pendamping*
@@ -246,6 +373,8 @@ export default function MainForm({
                 sx={{
                   mt: 1,
                   width: "100%",
+                  fontFamily: "outfitFont",
+                  fontWeight: 500,
                 }}
                 type="number"
                 InputProps={{
@@ -255,6 +384,8 @@ export default function MainForm({
                         style={{
                           color: errors.nomorWa ? "#E2403D" : "#8692A6",
                           fontSize: "14px",
+                          fontFamily: "outfitFont",
+                          fontWeight: 500,
                         }}
                       >
                         +62
@@ -263,18 +394,30 @@ export default function MainForm({
                   ),
                 }}
               />
-              <FormHelperText variant="outlined" sx={{ color: "#E2403D" }}>
+              <FormHelperText
+                variant="outlined"
+                sx={{
+                  color: "#E2403D",
+                  fontFamily: "outfitFont",
+                  fontWeight: 500,
+                }}
+              >
                 {
                   // @ts-ignore
                   errors["nomorWa"]
                 }
               </FormHelperText>
             </FormControl>
-            <FormControl fullWidth sx={{ mt: 3 }}>
+            <FormControl
+              fullWidth
+              sx={{ mt: 3, fontFamily: "outfitFont", fontWeight: 500 }}
+            >
               <Typography
                 style={{
                   color: errors.statusPendamping ? "#E2403D" : "#696F79",
                   fontSize: "16px",
+                  fontFamily: "outfitFont",
+                  fontWeight: 500,
                 }}
               >
                 Status Pendamping*
@@ -283,7 +426,7 @@ export default function MainForm({
                 {...getFieldProps("statusPendamping")}
                 name="statusPendamping"
                 error={Boolean(errors.statusPendamping)}
-                sx={{ mt: 1 }}
+                sx={{ mt: 1, fontFamily: "outfitFont", fontWeight: 500 }}
                 fullWidth
                 displayEmpty
                 inputProps={{ "aria-label": "Without label" }}
@@ -310,7 +453,13 @@ export default function MainForm({
                 <MenuItem value="saudara">Saudara</MenuItem>
                 <MenuItem value="lainnya">Lainnya</MenuItem>
               </Select>
-              <FormHelperText sx={{ color: "#E2403D" }}>
+              <FormHelperText
+                sx={{
+                  color: "#E2403D",
+                  fontFamily: "outfitFont",
+                  fontWeight: 500,
+                }}
+              >
                 {errors.statusPendamping}
               </FormHelperText>
             </FormControl>
@@ -321,9 +470,9 @@ export default function MainForm({
             setFieldValue={setFieldValue}
             errors={errors}
             getFieldProps={getFieldProps}
-            grade={values.levelSiswa}
             namaLengkapSiswa={values.namaLengkapSiswa}
             levelSiswa={values.levelSiswa}
+            id={values.id}
           />
         )}
 
@@ -342,22 +491,53 @@ export default function MainForm({
           ) : (
             <>
               <Box sx={{ mb: 0 }}>
-                <Typography variant="h4" sx={{ color: "text.secondary" }}>
+                <Typography
+                  variant="h4"
+                  sx={{
+                    color: "text.secondary",
+                    fontFamily: "outfitFont",
+                    fontWeight: 500,
+                  }}
+                >
                   Verifikasi Data Form
                 </Typography>
 
                 <br />
-                <Typography sx={{ color: "text.secondary" }}>
+                <Typography
+                  sx={{
+                    color: "text.secondary",
+                    fontFamily: "outfitFont",
+                    fontWeight: 500,
+                  }}
+                >
                   Nama Siswa : <b>{values.namaLengkapSiswa}</b>
                 </Typography>
-                <Typography sx={{ color: "text.secondary" }}>
+                <Typography
+                  sx={{
+                    color: "text.secondary",
+                    fontFamily: "outfitFont",
+                    fontWeight: 500,
+                  }}
+                >
                   Level Siswa : <b>{values.levelSiswa}</b>
                 </Typography>
                 <hr style={{ marginTop: "10px", marginBottom: "10px" }} />
-                <Typography sx={{ color: "text.secondary" }}>
+                <Typography
+                  sx={{
+                    color: "text.secondary",
+                    fontFamily: "outfitFont",
+                    fontWeight: 500,
+                  }}
+                >
                   Nama Pendamping : <b>{values.namaPendamping}</b>
                 </Typography>
-                <Typography sx={{ color: "text.secondary" }}>
+                <Typography
+                  sx={{
+                    color: "text.secondary",
+                    fontFamily: "outfitFont",
+                    fontWeight: 500,
+                  }}
+                >
                   No WA Pendamping : <b>+62 {values.nomorWa}</b>
                 </Typography>
               </Box>

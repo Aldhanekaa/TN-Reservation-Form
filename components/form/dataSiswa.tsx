@@ -10,13 +10,15 @@ import {
 import { FormikErrors } from "formik";
 import { FormSchemaI } from "./FormSchema";
 import grades from "data/grades";
-import dataSiswa, { SlotDataI } from "data/mainDatas";
+import getSiswa from "utils/getName";
+import { ReservationI } from "model/reservation";
 
 export default function DataSiswa({
   errors,
   setFieldValue,
-  grade,
   namaLengkapSiswa,
+  id,
+  levelSiswa,
 }: {
   errors: FormikErrors<FormSchemaI>;
   getFieldProps: (input: string) => any;
@@ -25,12 +27,12 @@ export default function DataSiswa({
     value: any,
     shouldValidate?: boolean | undefined
   ) => Promise<FormikErrors<FormSchemaI>> | Promise<void>;
-  grade: number;
   namaLengkapSiswa: string;
   levelSiswa: number;
+  id: string;
 }) {
-  const [daftarSiswa, setDaftarSiswa] = React.useState<Array<SlotDataI>>([]);
-  const [gender] = React.useState<"m" | "f">("m");
+  const [daftarSiswa, setDaftarSiswa] = React.useState<Array<ReservationI>>([]);
+  const [gender, setGender] = React.useState<"L" | "P">("L");
   const [fetchingSiswa, setFetchingSiswa] = React.useState<boolean>(false);
 
   const gradeOptions = grades.map((option) => {
@@ -45,24 +47,36 @@ export default function DataSiswa({
 
   const daftarSiswaOptions = daftarSiswa.map((option) => {
     return {
-      firstLetter: option.gender == "m" ? "Male" : "Female",
-      value: option.lengkap,
+      gender: option.gender == "L" ? "Laki" : "Perempuan",
+      value: option.nama_lengkap,
+      id: option.id,
     };
   });
 
   React.useEffect(() => {
+    gradeChange();
+  }, [levelSiswa]);
+
+  async function gradeChange() {
     setFetchingSiswa(true);
-    setDaftarSiswa(dataSiswa.filter((siswa) => siswa.level == grade));
+    const siswa = await getSiswa(levelSiswa);
+
+    setDaftarSiswa(siswa.item);
     setFetchingSiswa(false);
-  }, [grade]);
+  }
 
   return (
     <>
-      <FormControl fullWidth sx={{ mt: 3 }}>
+      <FormControl
+        fullWidth
+        sx={{ mt: 3, fontFamily: "outfitFont", fontWeight: 500 }}
+      >
         <Typography
           style={{
             color: errors.statusPendamping ? "#E2403D" : "#696F79",
             fontSize: "16px",
+            fontFamily: "outfitFont",
+            fontWeight: 500,
           }}
         >
           Level Siswa*
@@ -76,51 +90,26 @@ export default function DataSiswa({
           getOptionLabel={(option) => option.value}
           sx={{ mt: 1 }}
           value={{
-            firstLetter: String(grade),
-            value: grade,
+            firstLetter: String(levelSiswa),
+            value: levelSiswa,
           }}
           onChange={(_event, value) => {
-            if (grade != value?.value) {
+            if (levelSiswa != value?.value) {
               setFieldValue("namaLengkapSiswa", "");
+              setFieldValue("id", "");
               setFieldValue("levelSiswa", value?.value);
             }
           }}
           renderInput={(params) => (
             <TextField placeholder="Level" {...params} />
           )}
-          getOptionDisabled={(option) => option.value == 1}
           renderOption={(props, option) => (
             <Box
               component="li"
               sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
               {...props}
             >
-              {option.value} — Tersisa{" "}
-              <b style={{ marginLeft: 4 }}>
-                {Math.floor(Math.random() * 35) + 1} Slot!
-              </b>
-              {/* {
-                exhibitionDays[
-                  // @ts-ignore
-                  grades.find((grade) => grade.grade == option.value).day - 1
-                ].date
-              }
-              ,{" "}
-              {
-                sessions[
-                  // @ts-ignore
-                  grades.find((grade) => grade.grade == option.value).session -
-                    1
-                ].start
-              }{" "}
-              -{" "}
-              {
-                sessions[
-                  // @ts-ignore
-                  grades.find((grade) => grade.grade == option.value).session -
-                    1
-                ].end
-              } */}
+              {option.value}
             </Box>
           )}
         />
@@ -134,32 +123,46 @@ export default function DataSiswa({
           style={{
             color: errors.namaLengkapSiswa ? "#E2403D" : "#696F79",
             fontSize: "16px",
+            fontFamily: "outfitFont",
+            fontWeight: 500,
           }}
         >
           Nama Lengkap Siswa*
         </Typography>
         <Autocomplete
           fullWidth
-          id="levelSiswa"
-          options={daftarSiswaOptions}
-          groupBy={(option) => option.firstLetter}
+          id="namaLengkapSiswa"
+          options={daftarSiswaOptions.sort(
+            (a, b) => -b.gender.localeCompare(a.gender)
+          )}
+          groupBy={(option) => option.gender}
           // @ts-ignore
           getOptionLabel={(option) => option.value}
-          sx={{ mt: 1 }}
+          sx={{ mt: 1, textTransform: "lowercase" }}
           value={{
-            firstLetter: gender,
+            gender: gender,
             value: namaLengkapSiswa,
+            id: id,
           }}
           onChange={(_event, value) => {
             if (namaLengkapSiswa != value?.value) {
+              // @ts-ignore
+              setGender(value?.firstLetter);
+              setFieldValue("id", value?.id);
               setFieldValue("namaLengkapSiswa", value?.value);
             }
           }}
+          // @ts-ignore                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   n
+          getOptionDisabled={(option) =>
+            daftarSiswa.find((siswa) => siswa.id == option.id)?.reservation
+              .reserved
+          }
           renderInput={(params) => (
             <TextField
               placeholder="Nama Lengkap Siswa"
               {...params}
               error={Boolean(errors.namaLengkapSiswa)}
+              sx={{ textTransform: "lowercase" }}
             />
           )}
           renderOption={(props, option) => (
@@ -168,7 +171,7 @@ export default function DataSiswa({
               sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
               {...props}
             >
-              {option.value}
+              {option.value.toLocaleLowerCase()}
             </Box>
           )}
           loading={fetchingSiswa}
