@@ -34,6 +34,11 @@ export interface AuthMain {
 
 export interface AuthSuccess {
   type: AUTH_ACTIONS.AUTH_LOGIN_SUCCESS | AUTH_ACTIONS.AUTH_SIGNUP_SUCCESS;
+  me: {
+    id: string;
+    name: string;
+    level: number;
+  };
 }
 
 export type AuthDispatchTypes =
@@ -52,9 +57,14 @@ export const UserSignup = (form: { username: string; password: string }) => ({
   form,
 });
 
-export const UserLoginSuccess = () => ({
-  type: AUTH_ACTIONS.AUTH_LOGIN_SUCCESS,
-});
+export const UserLoginSuccess =
+  (user: { id: string; name: string; level: number }) =>
+  async (dispatch: Dispatch<AuthDispatchTypes>) => {
+    dispatch<AuthSuccess>({
+      type: AUTH_ACTIONS.AUTH_LOGIN_SUCCESS,
+      me: user,
+    });
+  };
 
 export const UserLogout =
   () => async (dispatch: Dispatch<AuthDispatchTypes>) => {
@@ -63,23 +73,9 @@ export const UserLogout =
     });
   };
 
-export const UserSignUpLoginSuccess =
-  () => async (dispatch: Dispatch<AuthDispatchTypes>) => {
-    dispatch<AuthSuccess>({
-      type: AUTH_ACTIONS.AUTH_SIGNUP_SUCCESS,
-    });
-  };
-
 export const UserAuthFail =
   (message: string) => async (dispatch: Dispatch<AuthDispatchTypes>) => {
     dispatch<AuthFail>({
       type: AUTH_ACTIONS.AUTH_FAIL,
-    });
-  };
-
-export const UserCheckTokenSuccess =
-  () => async (dispatch: Dispatch<AuthDispatchTypes>) => {
-    dispatch<AuthSuccess>({
-      type: AUTH_ACTIONS.AUTH_LOGIN_SUCCESS,
     });
   };

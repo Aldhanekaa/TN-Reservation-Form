@@ -96,8 +96,8 @@ const palette = {
   grey: GREY,
   gradients: GRADIENTS,
   divider: GREY[500_24],
-  text: { primary: GREY[800], secondary: GREY[600], disabled: GREY[500] },
-  background: { paper: "#fff", default: "#fff", neutral: GREY[200] },
+  text: { primary: GREY[0], secondary: GREY[200], disabled: GREY[400] },
+  background: { paper: "#37434F", default: "#3f5060", neutral: GREY[200] },
   action: {
     active: GREY[600],
     hover: GREY[500_8],

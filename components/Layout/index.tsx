@@ -98,7 +98,7 @@ export default function ProminentAppBar() {
 
       <RootStyle sx={{ mt: isDesktop ? 0 : 5 }}>
         <MHidden width="mdDown">
-          <SectionStyle>
+          <SectionStyle sx={{ zIndex: 999 }}>
             <div
               style={{
                 position: "absolute",
@@ -146,7 +146,7 @@ export default function ProminentAppBar() {
                 size="small"
                 style={{
                   color:
-                    currentStep == 0 || isSubmitting ? "#C4CDD5" : "#8692A6",
+                    currentStep == 0 || isSubmitting ? "#8692A6" : "#D1D8E1",
                   cursor:
                     currentStep == 0
                       ? "not-allowed"
@@ -164,10 +164,10 @@ export default function ProminentAppBar() {
               </Button>
 
               <Stack direction="column" alignItems="end">
-                <h4 style={{ fontWeight: 300, color: "#BDBDBD" }}>
+                <h4 style={{ fontWeight: 500, color: "#BDBDBD" }}>
                   STEP {currentStep + 1}/{FormSteps.length + 1}
                 </h4>
-                <p style={{ fontWeight: 700, color: "#8692A6" }}>
+                <p style={{ fontWeight: 700, color: "#fff" }}>
                   {currentStep == FormSteps.length
                     ? "Konfirmasi"
                     : FormSteps[currentStep].label}

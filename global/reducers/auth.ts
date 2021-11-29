@@ -4,6 +4,11 @@ export interface AuthState {
   loading: boolean;
   logggedIn: boolean;
   fetched: boolean;
+  me?: {
+    id: string;
+    name: string;
+    level: number;
+  };
 }
 
 const defaultState: AuthState = {
@@ -18,9 +23,14 @@ const authReducer = (
 ): AuthState => {
   switch (action.type) {
     case AUTH_ACTIONS.AUTH_LOGIN_SUCCESS:
-    case AUTH_ACTIONS.AUTH_SIGNUP_SUCCESS:
       // console.log("ACTION", action);
-      return { ...state, logggedIn: true, loading: false, fetched: true };
+      return {
+        ...state,
+        logggedIn: true,
+        loading: false,
+        fetched: true,
+        me: action.me,
+      };
     case AUTH_ACTIONS.AUTH_FAIL:
       return {
         ...state,

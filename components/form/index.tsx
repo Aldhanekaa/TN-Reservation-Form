@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useRouter } from "next/router";
 import {
   Typography,
   TextField,
@@ -11,6 +11,7 @@ import {
   Box,
   Stack,
   Button,
+  LinearProgress,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import FormSchema, { FormSchemaI } from "./FormSchema";
@@ -25,6 +26,10 @@ import SubmitButton from "./SubmitButton";
 import DataSiswa from "./dataSiswa";
 import ReserveSeat from "utils/reserveSeat";
 import { getSession, getSessionByLevel } from "utils/getSession";
+
+import { RootStore } from "global/index";
+import { useSelector, useDispatch } from "react-redux";
+import { UserLoginSuccess } from "global/actions/auth";
 
 const StyledInputElement = styled(TextField)`
   background: transparent;
@@ -67,12 +72,14 @@ export default function MainForm({
   setSubmitting: (input: boolean) => void;
   setSuccessSubmitted: (input: boolean) => void;
 }) {
+  const auth = useSelector((state: RootStore) => state.user);
+
+  const dispatch = useDispatch();
+
+  const router = useRouter();
   const [qrCodeImageURL, setQRCodeImageURL] = useState<undefined | string>();
   const formik = useFormik<FormSchemaI>({
     initialValues: {
-      namaPendamping: "",
-      nomorWa: "",
-      statusPendamping: "",
       // @ts-ignore
       levelSiswa: Math.floor(Math.random() * 9) + 1,
       namaLengkapSiswa: "",
@@ -80,10 +87,10 @@ export default function MainForm({
     },
     validationSchema: FormSchema,
     async onSubmit(_values, help) {
-      console.log("sdf");
+      // console.log("sdf");
 
       const reservedSeat = await ReserveSeat(_values);
-      console.log(reservedSeat);
+      // console.log(reservedSeat);
       if (reservedSeat.status == "success") {
         const qrcode = await QRCodeGenerator.toDataURL(values.id, {
           color: {
@@ -102,6 +109,16 @@ export default function MainForm({
 
         help.setSubmitting(false);
         PrintDiv(document.querySelector(".QRCode-Card"));
+        dispatch(
+          UserLoginSuccess({
+            id: _values.id,
+            name: _values.namaLengkapSiswa,
+            level: _values.levelSiswa,
+          })
+        );
+        setTimeout(() => {
+          router.push("/live");
+        }, 1000);
         return;
       }
 
@@ -136,13 +153,13 @@ export default function MainForm({
           <>
             <img
               src="/celebrationOWO.png"
-              style={{ position: "absolute", top: 0, left: -30, zIndex: -1 }}
+              style={{ position: "absolute", top: 0, left: -30, zIndex: 99 }}
               width="auto"
               height="auto"
             />
             <img
               src="/celebrationUWU.png"
-              style={{ position: "absolute", bottom: 0, right: 0, zIndex: -1 }}
+              style={{ position: "absolute", bottom: 0, right: 0, zIndex: 99 }}
               width="auto"
               height="auto"
             />
@@ -151,13 +168,12 @@ export default function MainForm({
 
         <Typography
           style={{
-            color: "#3F5060",
+            color: "#fff",
             fontSize: "24px",
             fontFamily: "outfitFont",
           }}
         >
-          Terima Kasih Telah Mengisi Formulir di Acara TechnoNatura Art
-          Exhibition 2021!
+          Memuat Halaman...
         </Typography>
         <Typography
           style={{
@@ -167,92 +183,18 @@ export default function MainForm({
             fontWeight: 500,
           }}
         >
-          Terima kasih atas minat Anda!
+          Mohon tunggu halaman untuk memuat..
         </Typography>
-        <Stack
-          direction={isDesktop ? `row` : "column"}
-          alignItems="center"
-          sx={{ mt: "10px" }}
-          className="QRCode-Card"
-        >
-          <Box sx={{ mb: 1 }}>
-            <Image src={qrCodeImageURL} width={250} height={250} />
-          </Box>
-          <Box sx={{ padding: isDesktop ? "0" : "5px 25px" }}>
-            <Typography
-              style={{
-                color: "#3F5060",
-                fontSize: "15px",
-                fontFamily: "outfitFont",
-                fontWeight: 500,
-              }}
-            >
-              Nama Pendamping <br />{" "}
-              <b style={{ fontSize: "24px" }}>{values.namaPendamping}</b>
-            </Typography>
-            <Typography
-              style={{
-                color: "#647585",
-                fontSize: "15px",
-                fontFamily: "outfitFont",
-                fontWeight: 500,
-              }}
-            >
-              Nama siswa <br />{" "}
-              <b style={{ fontSize: "18px" }}>{values.namaLengkapSiswa}</b>
-            </Typography>
-            <Typography
-              sx={{ mt: isDesktop ? 4 : 2, mb: 4 }}
-              style={{
-                color: "#7B8E9F",
-                fontSize: "14px",
-                fontFamily: "outfitFont",
-                fontWeight: 500,
-              }}
-            >
-              {
-                // @ts-ignore
-                getSession(getSessionByLevel(String(values.levelSiswa)))
-              }
-            </Typography>
-          </Box>
-        </Stack>
-        <Button
-          onClick={() => PrintDiv(document.querySelector(".QRCode-Card"))}
-          fullWidth
-          variant="contained"
-          sx={{
-            color: "#fff",
-            mb: 2,
-            fontFamily: "outfitFont",
-          }}
-        >
-          Download QRCode
-        </Button>
-        <Typography
-          sx={{
-            color: "#8692A6",
-            fontSize: "18px",
-            fontFamily: "outfitFont",
-            fontWeight: 300,
-          }}
-        >
-          Berikan Kode QR di atas kepada Staf Acara untuk dikonfirmasi ketika
-          Anda pergi ke TechnoNatura saat{" "}
-          {
-            days[
-              new Date(
-                // @ts-ignore
-                getSession(getSessionByLevel(String(values.levelSiswa)), true)
-              ).getDay()
-            ]
-          }
-          ,{" "}
-          {
-            // @ts-ignore
-            getSession(getSessionByLevel(String(values.levelSiswa)))
-          }
-        </Typography>
+        <Box sx={{ width: "100%", mt: 3 }}>
+          <LinearProgress
+            sx={{
+              color:
+                "linear-gradient(to right, #EA543F, #EDA525, #6ABD45, #3FA4DC)",
+              backgroundColor:
+                "linear-gradient(to right, #EA543F, #EDA525, #6ABD45, #3FA4DC)",
+            }}
+          />
+        </Box>
       </>
     );
   }
@@ -272,7 +214,7 @@ export default function MainForm({
                 <Typography
                   variant="h3"
                   style={{
-                    color: "#3F5060",
+                    color: "#fff",
                     fontSize: "30px",
                     fontFamily: "outfitFont",
                   }}
@@ -281,7 +223,7 @@ export default function MainForm({
                 </Typography>
                 <Typography
                   style={{
-                    color: "#8692A6",
+                    color: "#AAB7CE",
                     fontSize: "18px",
                     fontFamily: "outfitFont",
                     fontWeight: 700,
@@ -351,121 +293,6 @@ export default function MainForm({
         })}
 
         {currentStep == 0 && (
-          <>
-            <FormControl fullWidth sx={{ mt: 3 }}>
-              <Typography
-                style={{
-                  color: errors.nomorWa ? "#E2403D" : "#696F79",
-                  fontSize: "16px",
-                  fontFamily: "outfitFont",
-                  fontWeight: 500,
-                }}
-              >
-                Nomor WA Pendamping*
-              </Typography>
-              <StyledInputElement
-                id="outlined-textarea"
-                placeholder="Nomor WA"
-                multiline
-                {...getFieldProps("nomorWa")}
-                // @ts-ignore
-                error={Boolean(errors["nomorWa"])}
-                sx={{
-                  mt: 1,
-                  width: "100%",
-                  fontFamily: "outfitFont",
-                  fontWeight: 500,
-                }}
-                type="number"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Typography
-                        style={{
-                          color: errors.nomorWa ? "#E2403D" : "#8692A6",
-                          fontSize: "14px",
-                          fontFamily: "outfitFont",
-                          fontWeight: 500,
-                        }}
-                      >
-                        +62
-                      </Typography>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <FormHelperText
-                variant="outlined"
-                sx={{
-                  color: "#E2403D",
-                  fontFamily: "outfitFont",
-                  fontWeight: 500,
-                }}
-              >
-                {
-                  // @ts-ignore
-                  errors["nomorWa"]
-                }
-              </FormHelperText>
-            </FormControl>
-            <FormControl
-              fullWidth
-              sx={{ mt: 3, fontFamily: "outfitFont", fontWeight: 500 }}
-            >
-              <Typography
-                style={{
-                  color: errors.statusPendamping ? "#E2403D" : "#696F79",
-                  fontSize: "16px",
-                  fontFamily: "outfitFont",
-                  fontWeight: 500,
-                }}
-              >
-                Status Pendamping*
-              </Typography>
-              <Select
-                {...getFieldProps("statusPendamping")}
-                name="statusPendamping"
-                error={Boolean(errors.statusPendamping)}
-                sx={{ mt: 1, fontFamily: "outfitFont", fontWeight: 500 }}
-                fullWidth
-                displayEmpty
-                inputProps={{ "aria-label": "Without label" }}
-                // @ts-ignore
-                renderValue={(selected) => {
-                  if (!selected) {
-                    return (
-                      <Typography
-                        style={{
-                          color: errors.statusPendamping
-                            ? "#E2403D"
-                            : "#696F79",
-                          fontSize: "16px",
-                        }}
-                      >
-                        Status Pendamping
-                      </Typography>
-                    );
-                  }
-                  return selected;
-                }}
-              >
-                <MenuItem value="orangtua">Orang Tua</MenuItem>
-                <MenuItem value="saudara">Saudara</MenuItem>
-                <MenuItem value="lainnya">Lainnya</MenuItem>
-              </Select>
-              <FormHelperText
-                sx={{
-                  color: "#E2403D",
-                  fontFamily: "outfitFont",
-                  fontWeight: 500,
-                }}
-              >
-                {errors.statusPendamping}
-              </FormHelperText>
-            </FormControl>
-          </>
-        )}
-        {currentStep == 1 && (
           <DataSiswa
             setFieldValue={setFieldValue}
             errors={errors}
@@ -501,7 +328,6 @@ export default function MainForm({
                 >
                   Verifikasi Data Form
                 </Typography>
-
                 <br />
                 <Typography
                   sx={{
@@ -520,25 +346,6 @@ export default function MainForm({
                   }}
                 >
                   Level Siswa : <b>{values.levelSiswa}</b>
-                </Typography>
-                <hr style={{ marginTop: "10px", marginBottom: "10px" }} />
-                <Typography
-                  sx={{
-                    color: "text.secondary",
-                    fontFamily: "outfitFont",
-                    fontWeight: 500,
-                  }}
-                >
-                  Nama Pendamping : <b>{values.namaPendamping}</b>
-                </Typography>
-                <Typography
-                  sx={{
-                    color: "text.secondary",
-                    fontFamily: "outfitFont",
-                    fontWeight: 500,
-                  }}
-                >
-                  No WA Pendamping : <b>+62 {values.nomorWa}</b>
                 </Typography>
               </Box>
 

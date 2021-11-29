@@ -73,7 +73,7 @@ export default function DataSiswa({
       >
         <Typography
           style={{
-            color: errors.statusPendamping ? "#E2403D" : "#696F79",
+            color: errors.statusPendamping ? "#E2403D" : "#ECEBEE",
             fontSize: "16px",
             fontFamily: "outfitFont",
             fontWeight: 500,
@@ -121,7 +121,7 @@ export default function DataSiswa({
       <FormControl fullWidth sx={{ mt: 3 }}>
         <Typography
           style={{
-            color: errors.namaLengkapSiswa ? "#E2403D" : "#696F79",
+            color: errors.namaLengkapSiswa ? "#E2403D" : "#ECEBEE",
             fontSize: "16px",
             fontFamily: "outfitFont",
             fontWeight: 500,
@@ -152,11 +152,6 @@ export default function DataSiswa({
               setFieldValue("namaLengkapSiswa", value?.value);
             }
           }}
-          // @ts-ignore                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   n
-          getOptionDisabled={(option) =>
-            daftarSiswa.find((siswa) => siswa.id == option.id)?.reservation
-              .reserved
-          }
           renderInput={(params) => (
             <TextField
               placeholder="Nama Lengkap Siswa"

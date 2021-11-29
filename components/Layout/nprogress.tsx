@@ -13,7 +13,7 @@ export default function ProgressLoad() {
   //   const dispatch = useDispatch();
   //   const authState = useSelector((state: RootStore) => state.auth);
   const [state] = useState({
-    color: "#C8FACD",
+    color: "linear-gradient(to right, #EA543F, #EDA525, #6ABD45, #3FA4DC)",
     startPosition: 0.3,
     stopDelayMs: 200,
     height: 3,
