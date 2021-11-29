@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 import {
   Container,
@@ -10,11 +11,18 @@ import PlayIcon from "public/icons/play.svg";
 import VolumeHigh from "public/icons/volumeHigh.svg";
 import FullScreen from "public/icons/fullScreen.svg";
 import FullScreenExit from "public/icons/fullScreen-exit.svg";
+import Menu from "public/icons/Menu.svg";
+import eye from "public/icons/eye.svg";
+import like from "public/icons/like.svg";
+import share from "public/icons/share.svg";
 
-import { overflow } from "html2canvas/dist/types/css/property-descriptors/overflow";
+import Logoo from "../../public/logoo.svg";
+
 import ReactPlayer from "react-player";
 import IconButton from "./IconButton";
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
+import styled from "@emotion/styled";
+import EventHighlights from "./EventHighlights";
 
 const marks = [
   {
@@ -42,6 +50,24 @@ const marks = [
 function valuetext(value: number) {
   return `${value}°C`;
 }
+
+const DivSection = styled.div`
+  padding: 10px 25px 10px 25px;
+  border-radius: 10px;
+  background: linear-gradient(
+    to bottom,
+    rgba(111, 121, 138, 1),
+    rgba(111, 121, 138, 0)
+  );
+  cursor: pointer;
+  &:active {
+    background: linear-gradient(
+      to bottom,
+      rgba(111, 121, 138, 0.7),
+      rgba(111, 121, 138, 0)
+    );
+  }
+`;
 
 export default function Main() {
   const theme = useTheme();
@@ -117,7 +143,7 @@ export default function Main() {
         id="eventVideoPlayer"
       >
         <ReactPlayer
-          url="https://www.youtube.com/watch?v=ysz5S6PUM-U"
+          url="https://www.youtube.com/watch?v=ysz5dS6PUM-U-x"
           config={{
             youtube: {
               playerVars: {
@@ -162,13 +188,30 @@ export default function Main() {
           <Box
             sx={{
               width: "100%",
-              height: "55px",
+              height: isFullScreen ? "70px" : "0px",
               background: "rgba(63, 80, 96, 0.8)",
               position: "relative",
               bottom: isFullScreen ? 0 : 0,
+              borderBottomRightRadius: "10px",
+              borderBottomLeftRadius: "10px",
             }}
           >
-            asd
+            {isFullScreen && (
+              <Box
+                sx={{
+                  pr: 8,
+                  pl: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Image src={Logoo} width={150} height={75}></Image>
+                <IconButtonMUI>
+                  <IconButton src={Menu} width="25px" height="25px" />
+                </IconButtonMUI>
+              </Box>
+            )}
           </Box>
           <Box
             sx={{
@@ -191,7 +234,7 @@ export default function Main() {
                 marks={marks}
                 min={0}
                 max={1000}
-                valueLabelDisplay="on"
+                valueLabelDisplay="auto"
                 size="small"
                 // @ts-ignore
                 sx={{
@@ -270,6 +313,64 @@ export default function Main() {
           </Box>
         </Box>
       </Box>
+
+      <Box
+        sx={{
+          width: "100%",
+          pt: 0,
+          pb: 5,
+          position: "relative",
+          borderRadius: "10px",
+          overflow: "hidden",
+          color: "#F3FAFF",
+        }}
+      >
+        <Stack direction="row" justifyContent="space-between">
+          <DivSection
+            style={{
+              border: "2px #EA543F solid",
+              fontWeight: 300,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <IconButton src={eye} width="25px" height="25px" />
+            <b style={{ marginLeft: "5px", marginRight: "5px" }}>100</b>{" "}
+            Visitors Are Watching
+          </DivSection>
+
+          <Box sx={{ fontWeight: 600, display: "flex" }}>
+            <DivSection
+              style={{
+                border: "2px #EDA525 solid",
+                display: "flex",
+                alignItems: "center",
+                marginRight: "10px",
+              }}
+            >
+              <IconButton src={share} width="25px" height="25px" />
+              <p style={{ marginLeft: "5px" }}>Share</p>
+            </DivSection>
+            <Box style={{ position: "relative" }}>
+              <DivSection
+                style={{
+                  border: "2px #6ABD45 solid",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <IconButton src={like} width="25px" height="25px" />
+                <p style={{ marginLeft: "5px" }}>Like</p>
+              </DivSection>
+              {/* <p style={{ position: "absolute", bottom: -25, fontWeight: 500 }}>
+                <b>100</b> Visitors Likes
+              </p> */}
+            </Box>
+          </Box>
+        </Stack>
+      </Box>
+
+      <EventHighlights />
     </Container>
   );
 }
