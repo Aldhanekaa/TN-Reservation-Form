@@ -3,12 +3,6 @@ import Nasy from "public/speakers/nasy.png";
 import Nasi from "public/speakers/nasi.png";
 import Aldhan from "public/speakers/aldhan.png";
 
-const speakers = [
-  {
-    name: "Aldhaneka Aufa Izzat",
-    role: "<3 the girl beside me",
-    src: Aldhan,
-  },
-];
+const speakers = [];
 
 export default speakers;
