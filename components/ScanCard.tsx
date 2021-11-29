@@ -16,14 +16,10 @@ import { LoadingButton } from "@mui/lab";
 import { isDesktop } from "react-device-detect";
 import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { getSession, getSessionByLevel } from "utils/getSession";
 
-import { useSelector } from "react-redux";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 import CloseIcon from "@mui/icons-material/Close";
