@@ -9,21 +9,6 @@ const speakers = [
     role: "<3 the girl beside me",
     src: Aldhan,
   },
-  {
-    name: "Nasya",
-    role: "Event's Host",
-    src: Nasya,
-  },
-  {
-    name: "Nasya <33",
-    role: "Event's Host",
-    src: Nasy,
-  },
-  {
-    name: "Rice <33",
-    role: "Event's Host",
-    src: Nasi,
-  },
 ];
 
 export default speakers;
