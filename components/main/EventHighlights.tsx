@@ -8,6 +8,7 @@ import IconButton from "./IconButton";
 
 import styled from "@emotion/styled";
 import EventHighlightCard from "./EventHighlightCard";
+import Slider from "react-slick";
 
 const Button = styled.div`
   display: flex;
@@ -33,6 +34,57 @@ const Button = styled.div`
 `;
 
 export default function EventHighlights() {
+  const sliderRef = React.useRef(null);
+  const [slide, setSlide] = React.useState<number>(0);
+
+  React.useEffect(() => {
+    if (window.document) {
+      const slider = window.document.querySelector(".slider");
+      //   const innerSlider = window.document.getElementById("slider-inner");
+
+      let pressed = false;
+
+      slider?.addEventListener("mousedown", (e) => {
+        // @ts-ignore
+        slider.style.cursor = "grabbing";
+
+        pressed = true;
+      });
+
+      slider?.addEventListener("mouseenter", () => {
+        // @ts-ignore
+        slider.style.cursor = "grab";
+      });
+
+      slider?.addEventListener("mouseleave", () => {
+        // @ts-ignore
+        slider.style.cursor = "default";
+      });
+
+      slider?.addEventListener("mouseup", () => {
+        // @ts-ignore
+        slider.style.cursor = "grab";
+        pressed = false;
+      });
+
+      slider?.addEventListener("mousemove", (e) => {
+        if (!pressed) return;
+        e.preventDefault();
+      });
+    }
+  });
+
+  function nextSlide() {
+    // @ts-ignore
+    sliderRef.current.slickNext();
+    setSlide(slide + 1);
+  }
+  function prevSlide() {
+    // @ts-ignore
+    sliderRef.current.slickPrev();
+    if (slide != 0) setSlide(slide - 1);
+  }
+
   return (
     <>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -50,6 +102,7 @@ export default function EventHighlights() {
                 background: "url(/icons/BackButtonClicked.svg)",
               },
             }}
+            onClick={prevSlide}
           ></Box>
           <Box
             sx={{
@@ -62,21 +115,15 @@ export default function EventHighlights() {
                 background: "url(/icons/NextButtonClicked.svg)",
               },
             }}
+            onClick={nextSlide}
           ></Box>
         </Box>
       </Stack>
 
-      <Box sx={{ position: "relative", width: "100%" }}>
-        <div
-          style={{
-            position: "absolute",
-            width: "75px",
-            height: "100%",
-            background:
-              "linear-gradient(to right, rgba(63, 80, 96, 1), rgba(63, 80, 96, 0))",
-            zIndex: 999,
-          }}
-        ></div>
+      <Box
+        sx={{ position: "relative", width: "100%", overflow: "hidden" }}
+        id="slider"
+      >
         <div
           style={{
             position: "absolute",
@@ -94,9 +141,58 @@ export default function EventHighlights() {
             mt: 2,
             overflowX: "scroll",
             position: "relative",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            "::-webkit-scrollbar": {
+              display: "none",
+            },
           }}
+          id="slider-inner"
         >
-          <div style={{ marginTop: 2, width: "100%", display: "flex" }}>
+          <Slider
+            ref={sliderRef}
+            className="slider"
+            {...{
+              dots: false,
+              infinite: false,
+              speed: 500,
+              slidesToShow: 5,
+              slidesToScroll: 5,
+              initialSlide: 0,
+              draggable: true,
+              responsive: [
+                {
+                  breakpoint: 1210,
+                  settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 4,
+                  },
+                },
+                {
+                  breakpoint: 985,
+                  settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 3,
+                  },
+                },
+                {
+                  breakpoint: 755,
+                  settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 2,
+                  },
+                },
+                {
+                  breakpoint: 505,
+                  settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    centerMode: true,
+                  },
+                },
+              ],
+            }}
+          >
             <div>
               <EventHighlightCard
                 title="Opening"
@@ -175,7 +271,7 @@ export default function EventHighlights() {
                 variant="red"
               />
             </div>
-          </div>
+          </Slider>
         </Box>
       </Box>
     </>
