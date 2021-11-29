@@ -46,11 +46,6 @@ const marks = [
     label: "100°C",
   },
 ];
-
-function valuetext(value: number) {
-  return `${value}°C`;
-}
-
 const DivSection = styled.div`
   padding: 10px 25px 10px 25px;
   border-radius: 10px;
@@ -115,7 +110,7 @@ export default function Main() {
       // @ts-ignore
       window.document
         .getElementById("eventVideoPlayer")
-        .addEventListener("fullscreenchange", (event) => {
+        .addEventListener("fullscreenchange", () => {
           // document.fullscreenElement will point to the element that
           // is in fullscreen mode if there is one. If not, the value
           // of the property is null.
@@ -206,7 +201,7 @@ export default function Main() {
                   justifyContent: "space-between",
                 }}
               >
-                <Image src={Logoo} width={150} height={75}></Image>
+                <Image src={Logoo} width={150} height={75} />
                 <IconButtonMUI>
                   <IconButton src={Menu} width="25px" height="25px" />
                 </IconButtonMUI>

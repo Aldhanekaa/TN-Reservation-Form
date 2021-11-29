@@ -1,10 +1,6 @@
 import React from "react";
-import Image from "next/image";
 import { Stack } from "@mui/material";
 import { Box } from "@mui/system";
-import back from "public/icons/BackButton.svg";
-import next from "public/icons/NextButton.svg";
-import IconButton from "./IconButton";
 
 import styled from "@emotion/styled";
 import EventHighlightCard from "./EventHighlightCard";
@@ -35,7 +31,6 @@ const Button = styled.div`
 
 export default function EventHighlights() {
   const sliderRef = React.useRef(null);
-  const [slide, setSlide] = React.useState<number>(0);
 
   React.useEffect(() => {
     if (window.document) {
@@ -75,14 +70,13 @@ export default function EventHighlights() {
   });
 
   function nextSlide() {
+    console.log(sliderRef);
     // @ts-ignore
     sliderRef.current.slickNext();
-    setSlide(slide + 1);
   }
   function prevSlide() {
     // @ts-ignore
     sliderRef.current.slickPrev();
-    if (slide != 0) setSlide(slide - 1);
   }
 
   return (
