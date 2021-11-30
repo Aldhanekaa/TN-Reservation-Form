@@ -1,7 +1,6 @@
 import { Container, Box } from "@mui/material";
 import speakers from "data/speakers";
 import SpeakerCard from "./speakerCard";
-import styled from "@emotion/styled";
 
 export default function Speaker() {
   return (

@@ -72,3 +72,9 @@ a {
 * {
   box-sizing: border-box;
 }
+
+#react-player {
+  border-radius: 10px;
+  overflow: hidden;
+  margin: auto;
+}

@@ -18,6 +18,7 @@ import FormSchema, { FormSchemaI } from "./FormSchema";
 import { useFormik, Form, FormikProvider } from "formik";
 import { isDesktop } from "react-device-detect";
 import html2canvas from "html2canvas";
+import { setCookies } from "cookies-next";
 
 import QRCodeGenerator from "qrcode";
 
@@ -25,7 +26,7 @@ import FormSteps from "./FormSteps";
 import SubmitButton from "./SubmitButton";
 import DataSiswa from "./dataSiswa";
 import ReserveSeat from "utils/reserveSeat";
-import { getSession, getSessionByLevel } from "utils/getSession";
+import socket from "socket/index";
 
 import { RootStore } from "global/index";
 import { useSelector, useDispatch } from "react-redux";
@@ -84,6 +85,7 @@ export default function MainForm({
       levelSiswa: Math.floor(Math.random() * 9) + 1,
       namaLengkapSiswa: "",
       id: "",
+      statusVisitor: "",
     },
     validationSchema: FormSchema,
     async onSubmit(_values, help) {
@@ -102,7 +104,7 @@ export default function MainForm({
         const success = new Audio(
           "https://res.cloudinary.com/dh3vfns2y/video/upload/v1637328818/01%20Hero%20Sounds/hero_decorative-celebration-02_filr7e.wav"
         );
-        success.play();
+        await success.play();
 
         setSuccessSubmitted(true);
         setQRCodeImageURL(qrcode);
@@ -116,6 +118,9 @@ export default function MainForm({
             level: _values.levelSiswa,
           })
         );
+        socket.connect();
+        setCookies("id", _values.id);
+        console.log(socket.connected);
         setTimeout(() => {
           router.push("/live");
         }, 1000);
@@ -293,14 +298,70 @@ export default function MainForm({
         })}
 
         {currentStep == 0 && (
-          <DataSiswa
-            setFieldValue={setFieldValue}
-            errors={errors}
-            getFieldProps={getFieldProps}
-            namaLengkapSiswa={values.namaLengkapSiswa}
-            levelSiswa={values.levelSiswa}
-            id={values.id}
-          />
+          <>
+            <DataSiswa
+              setFieldValue={setFieldValue}
+              errors={errors}
+              getFieldProps={getFieldProps}
+              namaLengkapSiswa={values.namaLengkapSiswa}
+              levelSiswa={values.levelSiswa}
+              id={values.id}
+            />
+
+            <FormControl
+              fullWidth
+              sx={{ mt: 3, fontFamily: "outfitFont", fontWeight: 500 }}
+            >
+              <Typography
+                style={{
+                  color: errors.statusVisitor ? "#E2403D" : "#ECEBEE",
+                  fontSize: "16px",
+                  fontFamily: "outfitFont",
+                  fontWeight: 500,
+                }}
+              >
+                Status Pengunjung*
+              </Typography>
+              <Select
+                {...getFieldProps("statusVisitor")}
+                name="statusVisitor"
+                error={Boolean(errors.statusVisitor)}
+                sx={{ mt: 1, fontFamily: "outfitFont", fontWeight: 500 }}
+                fullWidth
+                displayEmpty
+                inputProps={{ "aria-label": "Without label" }}
+                // @ts-ignore
+                renderValue={(selected) => {
+                  if (!selected) {
+                    return (
+                      <Typography
+                        style={{
+                          color: errors.statusVisitor ? "#E2403D" : "#ECEBEE",
+                          fontSize: "16px",
+                        }}
+                      >
+                        Status Pengunjung
+                      </Typography>
+                    );
+                  }
+                  return selected;
+                }}
+              >
+                <MenuItem value="Orang Tua">Orang Tua</MenuItem>
+                <MenuItem value="Saudara">Saudara</MenuItem>
+                <MenuItem value="Siswa">Siswa</MenuItem>
+              </Select>
+              <FormHelperText
+                sx={{
+                  color: "#E2403D",
+                  fontFamily: "outfitFont",
+                  fontWeight: 500,
+                }}
+              >
+                {errors.statusVisitor}
+              </FormHelperText>
+            </FormControl>
+          </>
         )}
 
         {/* eslint-disable-next-line no-nested-ternary */}
@@ -346,6 +407,16 @@ export default function MainForm({
                   }}
                 >
                   Level Siswa : <b>{values.levelSiswa}</b>
+                </Typography>
+
+                <Typography
+                  sx={{
+                    color: "text.secondary",
+                    fontFamily: "outfitFont",
+                    fontWeight: 500,
+                  }}
+                >
+                  Status Pengunjung : <b>{values.statusVisitor}</b>
                 </Typography>
               </Box>
 

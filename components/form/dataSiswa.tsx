@@ -73,7 +73,7 @@ export default function DataSiswa({
       >
         <Typography
           style={{
-            color: errors.statusPendamping ? "#E2403D" : "#ECEBEE",
+            color: errors.levelSiswa ? "#E2403D" : "#ECEBEE",
             fontSize: "16px",
             fontFamily: "outfitFont",
             fontWeight: 500,
@@ -114,7 +114,7 @@ export default function DataSiswa({
           )}
         />
         <FormHelperText sx={{ color: "#E2403D" }}>
-          {errors.statusPendamping}
+          {errors.levelSiswa}
         </FormHelperText>
       </FormControl>
 

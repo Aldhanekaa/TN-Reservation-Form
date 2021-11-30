@@ -1,12 +1,20 @@
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import {
   Container,
   Box,
   Slider,
   IconButton as IconButtonMUI,
   Stack,
+  Button,
 } from "@mui/material";
+import LinearProgress from "@mui/material/LinearProgress";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+import VolumeOffIcon from "@mui/icons-material/VolumeOff";
+
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
+
 import PlayIcon from "public/icons/play.svg";
 import VolumeHigh from "public/icons/volumeHigh.svg";
 import FullScreen from "public/icons/fullScreen.svg";
@@ -18,11 +26,14 @@ import share from "public/icons/share.svg";
 
 import Logoo from "../../public/logoo.svg";
 
-import ReactPlayer from "react-player";
+import ReactPlayer from "react-youtube";
 import IconButton from "./IconButton";
 import { useTheme } from "@mui/material/styles";
 import styled from "@emotion/styled";
 import EventHighlights from "./EventHighlights";
+
+// Throttled values
+import { useWindowSize } from "@react-hook/window-size/throttled";
 
 const marks = [
   {
@@ -64,44 +75,85 @@ const DivSection = styled.div`
   }
 `;
 
-export default function Main() {
-  const theme = useTheme();
-  const [isFullScreen, setFullScreen] = React.useState(false);
+function convertHMS(value: string) {
+  const sec = parseInt(value, 10); // convert value to number if it's string
+  let hours = Math.floor(sec / 3600); // get hours
+  let minutes = Math.floor((sec - hours * 3600) / 60); // get minutes
+  let seconds = sec - hours * 3600 - minutes * 60; //  get seconds
+  // add 0 if value < 10; Example: 2 => 02
+  if (hours < 10) {
+    // @ts-ignore
+    hours = "0" + hours;
+  }
+  // @ts-ignore
+  if (minutes < 10) {
+    // @ts-ignore
+    minutes = "0" + minutes;
+  }
+  // @ts-ignore
+  if (seconds < 10) {
+    // @ts-ignore
+    seconds = "0" + seconds;
+  }
+  return hours + ":" + minutes + ":" + seconds; // Return is HH : MM : SS
+}
 
-  function toggleFullScreenVideo() {
+export default function Main() {
+  const liveEventStarts = new Date(
+    "Dec 1 2021 09:00:00 GMT+0700 (Western Indonesia Time)"
+  ).getTime();
+  const liveEventEnds = new Date(
+    "Dec 1 2021 11:30:00 GMT+0700 (Western Indonesia Time)"
+  ).getTime();
+
+  const [width, height] = useWindowSize();
+  const [muted, setMuted] = useState(false);
+  const [isPlaying, setPlaying] = useState(true);
+  const [stateChange, setStateChange] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [currentDuration, setCurrentDuration] = useState(0);
+
+  const theme = useTheme();
+  const reactPlayer = React.useRef(null);
+  const [isFullScreen, setFullScreen] = React.useState(false);
+  const [isStarted, setStarted] = React.useState(false);
+
+  async function toggleFullScreenVideo() {
     var elem = document.getElementById("eventVideoPlayer");
 
     if (!isFullScreen) {
       if (elem) {
         if (elem.requestFullscreen) {
-          elem.requestFullscreen();
+          await elem.requestFullscreen();
 
           // @ts-ignore
         } else if (elem.webkitRequestFullscreen) {
           /* Safari */
           // @ts-ignore
-          elem.webkitRequestFullscreen();
+          await elem.webkitRequestFullscreen();
+
           // @ts-ignore
         } else if (elem.msRequestFullscreen) {
           /* IE11 */
           // @ts-ignore
-          elem.msRequestFullscreen();
+          await elem.msRequestFullscreen();
         }
       }
     } else {
       if (document.exitFullscreen) {
-        document.exitFullscreen();
+        await document.exitFullscreen();
         // @ts-ignore
       } else if (document.webkitExitFullscreen) {
         /* Safari */
         // @ts-ignore
-        document.webkitExitFullscreen();
+        await document.webkitExitFullscreen();
         // @ts-ignore
       } else if (document.msExitFullscreen) {
         /* IE11 */
         // @ts-ignore
-        document.msExitFullscreen();
+        await document.msExitFullscreen();
       }
+      setPlaying(true);
     }
   }
 
@@ -124,6 +176,75 @@ export default function Main() {
     }
   });
 
+  React.useEffect(() => {
+    setInterval(() => {
+      setCurrentTimeFunc();
+      getDuration();
+    }, 1000);
+  }, []);
+
+  async function getDuration() {
+    const now = Date.now();
+
+    if (now < liveEventEnds) {
+      const currentDuration =
+        // @ts-ignore
+        await reactPlayer.current.internalPlayer.getDuration();
+      setCurrentDuration(currentDuration);
+    }
+  }
+
+  async function setCurrentTimeFunc() {
+    if (isPlaying) {
+      const currentTime =
+        // @ts-ignore
+        await reactPlayer.current.internalPlayer.getCurrentTime();
+      setCurrentTime(currentTime);
+    }
+  }
+
+  async function handlePlay() {
+    // @ts-ignore
+    reactPlayer.current.internalPlayer.playVideo();
+
+    // @ts-ignore
+    reactPlayer.current.internalPlayer.seekTo(currentTime, true);
+  }
+
+  async function IsMuted() {
+    // @ts-ignore
+    return await reactPlayer.current.internalPlayer.isMuted();
+  }
+
+  async function toggleVolume() {
+    // console.log(reactPlayer.current.internalPlayer);
+
+    const isMuted = await IsMuted();
+    // @ts-ignore
+    console.log(reactPlayer.current.internalPlayer);
+    if (isMuted) {
+      // @ts-ignore
+      reactPlayer.current.internalPlayer.unMute();
+      setMuted(false);
+    } else {
+      // @ts-ignore
+      reactPlayer.current.internalPlayer.mute();
+      setMuted(true);
+    }
+  }
+
+  async function toggleVideo() {
+    if (isPlaying) {
+      // @ts-ignore
+      await reactPlayer.current.internalPlayer.pauseVideo();
+      setPlaying(false);
+    } else {
+      // @ts-ignore
+      await reactPlayer.current.internalPlayer.playVideo();
+      setPlaying(true);
+    }
+  }
+
   return (
     <Container sx={{ pt: 5, pb: 5 }}>
       <Box
@@ -137,10 +258,20 @@ export default function Main() {
         }}
         id="eventVideoPlayer"
       >
-        <ReactPlayer
-          url="https://www.youtube.com/watch?v=ysz5dS6PUM-U-x"
-          config={{
-            youtube: {
+        <Box
+          style={{
+            width: "100%",
+            height: isFullScreen ? `100%` : "700px",
+          }}
+        >
+          <ReactPlayer
+            onPlay={() => {
+              setStarted(true);
+            }}
+            videoId="xDpzyDu0MhE"
+            id="react-player"
+            className="fd"
+            opts={{
               playerVars: {
                 // https://developers.google.com/youtube/player_parameters
                 autoplay: 1,
@@ -153,18 +284,59 @@ export default function Main() {
                 color: "white",
                 modestbranding: 1,
                 rel: 1,
-                frameborder: 0,
               },
-            },
-          }}
-          controls={false}
-          width="100%"
-          height={isFullScreen ? `100%` : "700px"}
-          style={{ borderRadius: "10px", overflow: "hidden" }}
-          onReady={() => {
-            console.log("im ready!");
-          }}
-        />
+              width: "100%",
+              height: isFullScreen ? `${height - 20}px` : "700px",
+            }}
+            ref={reactPlayer}
+            onError={() => {}}
+            onReady={() => handlePlay()}
+            onStateChange={(e) => {
+              setStateChange(e.data);
+            }}
+            onPlaybackRateChange={() => {
+              console.log("hi!");
+            }}
+          />
+        </Box>
+
+        {stateChange == -1 && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: "45%",
+              bottom: "50%",
+              left: "46%",
+              right: "50%",
+              zIndex: 99999,
+            }}
+          >
+            <Button
+              sx={{
+                ml: "2px",
+                mr: "2px",
+                background: "rgba(60, 80, 96, 1)",
+                color: "#fff",
+                boxShadow: "none",
+                transition: ".3s",
+                ":hover": {
+                  color: "rgba(63, 80, 96, 1)",
+                  background: "#fff",
+                  transform: "translateY(-5px)",
+                },
+                ":active": {
+                  transform: "translateY(-3px)",
+                },
+              }}
+              disableRipple
+              variant="contained"
+              onClick={handlePlay}
+            >
+              <PlayArrowIcon style={{ fontSize: "50px" }} />
+            </Button>
+          </Box>
+        )}
+
         <Box
           sx={{
             position: "absolute",
@@ -222,89 +394,114 @@ export default function Main() {
               justifyContent: "center",
             }}
           >
-            <Box sx={{ width: "100%" }}>
-              <Slider
-                aria-label="Always visible"
-                defaultValue={80}
-                marks={marks}
-                min={0}
-                max={1000}
-                valueLabelDisplay="auto"
-                size="small"
-                // @ts-ignore
-                sx={{
-                  color: "#fff",
-                  height: 4,
-                  margin: 0,
-                  padding: 0,
-                  "& .MuiSlider-markLabel": {
-                    display: "none",
-                  },
-                  "& .MuiSlider-mark": {
-                    width: "5px",
-                    height: "5px",
-                  },
-                  "& .MuiSlider-thumb": {
-                    width: 8,
-                    height: 8,
-                    "&:before": {
-                      boxShadow: "0 2px 12px 0 rgba(0,0,0,0.4)",
-                    },
-                    "&:hover, &.Mui-focusVisible": {
-                      boxShadow: `0px 0px 0px 8px ${
-                        theme.palette.mode === "dark"
-                          ? "rgb(255 255 255 / 16%)"
-                          : "rgb(0 0 0 / 16%)"
-                      }`,
-                    },
-                    "&.Mui-active": {
-                      width: 20,
-                      height: 20,
-                    },
-                  },
-                  "& .MuiSlider-rail": {
-                    opacity: 0.28,
-                  },
-                }}
-              />
-            </Box>
-            <Box>
-              <Stack flexDirection="row" justifyContent="space-between">
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <IconButtonMUI>
-                    <IconButton src={PlayIcon} width="25px" height="25px" />
-                  </IconButtonMUI>
-                  <IconButtonMUI sx={{ ml: "2px", mr: "2px" }}>
-                    <IconButton src={VolumeHigh} width="25px" height="25px" />
-                  </IconButtonMUI>
-                  <p
-                    style={{
-                      fontWeight: 200,
-                      fontSize: 10,
+            {isStarted ? (
+              <>
+                {" "}
+                <Box sx={{ width: "100%" }}>
+                  <Slider
+                    onChange={(_e, values) => {
+                      // @ts-ignore
+                      reactPlayer.current.internalPlayer.seekTo(values, true);
                     }}
-                  >
-                    00:02 / 10:23
-                  </p>
+                    aria-label="Always visible"
+                    defaultValue={currentTime}
+                    marks={marks}
+                    min={0}
+                    max={currentDuration}
+                    valueLabelDisplay="auto"
+                    size="small"
+                    // @ts-ignore
+                    sx={{
+                      color: "#fff",
+                      height: 4,
+                      margin: 0,
+                      padding: 0,
+                      "& .MuiSlider-markLabel": {
+                        display: "none",
+                      },
+                      "& .MuiSlider-mark": {
+                        width: "5px",
+                        height: "5px",
+                      },
+                      "& .MuiSlider-thumb": {
+                        width: 8,
+                        height: 8,
+                        "&:before": {
+                          boxShadow: "0 2px 12px 0 rgba(0,0,0,0.4)",
+                        },
+                        "&:hover, &.Mui-focusVisible": {
+                          boxShadow: `0px 0px 0px 8px ${
+                            theme.palette.mode === "dark"
+                              ? "rgb(255 255 255 / 16%)"
+                              : "rgb(0 0 0 / 16%)"
+                          }`,
+                        },
+                        "&.Mui-active": {
+                          width: 20,
+                          height: 20,
+                        },
+                      },
+                      "& .MuiSlider-rail": {
+                        opacity: 0.28,
+                      },
+                    }}
+                  />
                 </Box>
+                <Box>
+                  <Stack flexDirection="row" justifyContent="space-between">
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <IconButtonMUI onClick={toggleVideo}>
+                        {isPlaying ? (
+                          <PauseIcon style={{ color: "#fff" }} />
+                        ) : (
+                          <PlayArrowIcon style={{ color: "#fff" }} />
+                        )}
+                      </IconButtonMUI>
+                      <IconButtonMUI
+                        sx={{ ml: "2px", mr: "2px" }}
+                        onClick={toggleVolume}
+                      >
+                        {muted ? (
+                          <VolumeOffIcon style={{ color: "#fff" }} />
+                        ) : (
+                          <VolumeUpIcon style={{ color: "#fff" }} />
+                        )}
+                      </IconButtonMUI>
+                      <p
+                        style={{
+                          fontWeight: 200,
+                          fontSize: 10,
+                        }}
+                      >
+                        {convertHMS(String(currentTime))} /{" "}
+                        {convertHMS(
+                          String((liveEventEnds - liveEventStarts) / 1000)
+                        )}
+                      </p>
+                    </Box>
 
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  {" "}
-                  <p style={{ fontWeight: 200, fontSize: 10 }}>
-                    Life is still on going, 頑張って！ {":')"}
-                  </p>
-                  <IconButtonMUI
-                    sx={{ ml: "2px", mr: "2px" }}
-                    onClick={toggleFullScreenVideo}
-                  >
-                    <IconButton
-                      src={isFullScreen ? FullScreenExit : FullScreen}
-                      width="25px"
-                      height="25px"
-                    />
-                  </IconButtonMUI>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      {" "}
+                      <p style={{ fontWeight: 200, fontSize: 10 }}>
+                        Life is still on going, 頑張って！ {":')"}
+                      </p>
+                      <IconButtonMUI
+                        sx={{ ml: "2px", mr: "2px" }}
+                        onClick={toggleFullScreenVideo}
+                      >
+                        <IconButton
+                          src={isFullScreen ? FullScreenExit : FullScreen}
+                          width="25px"
+                          height="25px"
+                        />
+                      </IconButtonMUI>
+                    </Box>
+                  </Stack>
                 </Box>
-              </Stack>
-            </Box>
+              </>
+            ) : (
+              <LinearProgress color="inherit" />
+            )}
           </Box>
         </Box>
       </Box>

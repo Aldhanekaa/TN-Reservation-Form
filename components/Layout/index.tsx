@@ -119,7 +119,17 @@ export default function ProminentAppBar() {
               // @ts-ignore
               ref={sectionRef}
             >
-              <YouTube videoId="ALdgdGgF1a8" opts={{ width: "100%" }}></YouTube>
+              <YouTube
+                videoId="f5TNlMOC01c"
+                opts={{
+                  width: "100%",
+                  playerVars: {
+                    controls: 0,
+                    autoplay: 1,
+                    loop: 1,
+                  },
+                }}
+              ></YouTube>
               <Typography variant="h4" sx={{ mb: 5, color: "#fff" }}>
                 TechnoNatura Art Exhibition Trailer
               </Typography>

@@ -24,6 +24,11 @@ const FormSteps: Array<{
         input_name: "namaLengkapSiswa",
         show: false,
       },
+      {
+        label: "Status Visitor*",
+        input_name: "statusVisitor",
+        show: false,
+      },
     ],
   },
 ];

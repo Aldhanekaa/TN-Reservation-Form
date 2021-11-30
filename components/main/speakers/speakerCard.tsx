@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { Stack } from "@mui/material";
 import Image from "next/image";
 
 const BoxCard = styled.div`
@@ -76,7 +75,9 @@ export default function EventHighlightCard({
   return (
     <BoxCard>
       <Image src={src} width="250px" height="250px" />
-      <p style={{ color: "#FFFFFF", fontSize: "20px" }}>{name}</p>
+      <p style={{ color: "#FFFFFF", fontSize: "20px", fontWeight: 800 }}>
+        {name}
+      </p>
       <p style={{ color: "#E0E0E0", fontSize: "15px", fontWeight: 500 }}>
         {role}
       </p>

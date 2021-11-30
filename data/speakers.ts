@@ -1,8 +1,11 @@
-import Nasya from "public/speakers/nassya.png";
-import Nasy from "public/speakers/nasy.png";
-import Nasi from "public/speakers/nasi.png";
-import Aldhan from "public/speakers/aldhan.png";
+import Aldhan from "public/speakers/taufiq.png";
 
-const speakers = [];
+const speakers = [
+  {
+    name: "タウフィさん",
+    role: "Host",
+    src: Aldhan,
+  },
+];
 
 export default speakers;
