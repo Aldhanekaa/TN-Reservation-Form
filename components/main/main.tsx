@@ -29,8 +29,28 @@ import Logoo from "../../public/logoo.svg";
 import ReactPlayer from "react-youtube";
 import IconButton from "./IconButton";
 import { useTheme } from "@mui/material/styles";
-import styled from "@emotion/styled";
 import EventHighlights from "./EventHighlights";
+
+import styled from "@emotion/styled";
+
+const ColourfulText = styled.p`
+  animation: colorfultext 4s ease infinite;
+  animation-fill-mode: forwards;
+  @keyframes colorfultext {
+    25% {
+      color: #ea543f;
+    }
+    50% {
+      color: #eda525;
+    }
+    75% {
+      color: #6abd45;
+    }
+    100% {
+      color #3fa4dc;
+    }
+  }
+`;
 
 // Throttled values
 import { useWindowSize } from "@react-hook/window-size/throttled";
@@ -108,6 +128,8 @@ export default function Main() {
 
   const [width, height] = useWindowSize();
   const [muted, setMuted] = useState(false);
+  const [isLive, setLive] = useState(true);
+
   const [isPlaying, setPlaying] = useState(true);
   const [stateChange, setStateChange] = useState(-1);
   const [currentTime, setCurrentTime] = useState(0);
@@ -177,18 +199,50 @@ export default function Main() {
   });
 
   React.useEffect(() => {
+    const now = Date.now();
+
     setInterval(async () => {
       setCurrentTimeFunc();
     }, 1000);
+
+    SetLiveEventDuration();
   }, []);
 
   React.useEffect(() => {
-    if (currentDuration == 0) {
-      setCurrentDuration(currentTime);
-    } else {
-      setCurrentDuration(currentDuration + 1);
-    }
+    getDuration();
   }, [new Date().getSeconds()]);
+
+  async function SetLiveEventDuration() {
+    const now = Date.now();
+
+    if (now > liveEventEnds && currentDuration == 0) {
+      const currentDurationNow =
+        // @ts-ignore
+        await reactPlayer.current.internalPlayer.getDuration();
+      setCurrentDuration(currentDurationNow);
+      setLive(false);
+    }
+  }
+
+  async function getDuration() {
+    const now = Date.now();
+
+    if (!isLive) {
+      const currentDurationNow =
+        // @ts-ignore
+        await reactPlayer.current.internalPlayer.getDuration();
+      setCurrentDuration(currentDurationNow);
+      setLive(false);
+    }
+
+    if (isLive && now < liveEventEnds) {
+      if (currentDuration == 0) {
+        setCurrentDuration(currentTime);
+      } else {
+        setCurrentDuration(currentDuration + 1);
+      }
+    }
+  }
 
   async function setCurrentTimeFunc() {
     if (isPlaying) {
@@ -217,6 +271,8 @@ export default function Main() {
   }
 
   async function toggleVolume() {
+    // @ts-ignore
+    console.log(await reactPlayer.current.internalPlayer.getPlaybackQuality());
     // console.log(reactPlayer.current.internalPlayer);
 
     const isMuted = await IsMuted();
@@ -245,6 +301,12 @@ export default function Main() {
     }
   }
 
+  async function goTo(seconds: number) {
+    await // @ts-ignore
+    reactPlayer.current.internalPlayer.seekTo(seconds, true);
+    setCurrentTime(seconds);
+  }
+
   return (
     <Container sx={{ pt: 5, pb: 5 }}>
       <Box
@@ -268,7 +330,7 @@ export default function Main() {
             onPlay={() => {
               setStarted(true);
             }}
-            videoId="xDpzyDu0MhE"
+            videoId="DX5CD_MQTEg"
             id="react-player"
             className="fd"
             opts={{
@@ -395,12 +457,12 @@ export default function Main() {
               justifyContent: "center",
             }}
           >
-            {isStarted ? (
+            {isStarted && currentTime != 0 ? (
               <>
                 {" "}
                 <Box sx={{ width: "100%" }}>
                   <Slider
-                    onChange={(_e, values) => {
+                    onChangeCommitted={(_e, values) => {
                       // @ts-ignore
                       reactPlayer.current.internalPlayer.seekTo(values, true);
                     }}
@@ -408,7 +470,12 @@ export default function Main() {
                     marks={marks}
                     min={0}
                     max={currentDuration}
+                    defaultValue={currentTime}
+                    value={currentTime}
                     valueLabelDisplay="auto"
+                    valueLabelFormat={(value) => {
+                      return convertHMS(String(value));
+                    }}
                     size="small"
                     // @ts-ignore
                     sx={{
@@ -480,9 +547,27 @@ export default function Main() {
 
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       {" "}
-                      <p style={{ fontWeight: 200, fontSize: 10 }}>
-                        Life is still on going, 頑張って！ {":')"}
-                      </p>
+                      {isLive && (
+                        <Button
+                          color="inherit"
+                          variant="text"
+                          onClick={() => {
+                            setCurrentTime(currentDuration);
+
+                            // @ts-ignore
+                            reactPlayer.current.internalPlayer.seekTo(
+                              currentDuration,
+                              true
+                            );
+                          }}
+                        >
+                          <ColourfulText
+                            style={{ fontWeight: 600, fontSize: 12 }}
+                          >
+                            Live
+                          </ColourfulText>
+                        </Button>
+                      )}
                       <IconButtonMUI
                         sx={{ ml: "2px", mr: "2px" }}
                         onClick={toggleFullScreenVideo}
@@ -560,7 +645,7 @@ export default function Main() {
         </Stack>
       </Box>
 
-      <EventHighlights />
+      <EventHighlights goTo={goTo} />
     </Container>
   );
 }

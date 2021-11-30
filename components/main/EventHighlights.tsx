@@ -6,6 +6,8 @@ import styled from "@emotion/styled";
 import EventHighlightCard from "./EventHighlightCard";
 import Slider from "react-slick";
 
+import eventHighlights from "data/eventHighlights";
+
 const Button = styled.div`
   display: flex;
   align-items: center;
@@ -29,8 +31,33 @@ const Button = styled.div`
   }
 `;
 
-export default function EventHighlights() {
+function getVariant(variant: "red" | "green" | "yellow" | "blue" | "#fff") {
+  switch (variant) {
+    case "red":
+      return "red";
+      break;
+    case "green":
+      return "green";
+
+    case "yellow":
+      return "yellow";
+    case "blue":
+      return "blue";
+
+    default:
+      return "red";
+
+      break;
+  }
+}
+
+export default function EventHighlights({
+  goTo,
+}: {
+  goTo: (seconds: number) => Promise<void>;
+}) {
   const sliderRef = React.useRef(null);
+  let savedVariant: "red" | "green" | "yellow" | "blue" | "#fff" = "#fff";
 
   React.useEffect(() => {
     if (window.document) {
@@ -187,84 +214,23 @@ export default function EventHighlights() {
               ],
             }}
           >
-            <div>
-              <EventHighlightCard
-                title="Opening"
-                start="00:00"
-                end="05:00"
-                duration={5}
-                variant="red"
-              />
-            </div>
-            <div>
-              <EventHighlightCard
-                title="Opening"
-                start="00:00"
-                end="05:00"
-                duration={5}
-                variant="yellow"
-              />
-            </div>
-
-            <div>
-              <EventHighlightCard
-                title="Opening"
-                start="00:00"
-                end="05:00"
-                duration={5}
-                variant="green"
-              />
-            </div>
-
-            <div>
-              <EventHighlightCard
-                title="Opening"
-                start="00:00"
-                end="05:00"
-                duration={5}
-                variant="blue"
-              />
-            </div>
-
-            <div>
-              <EventHighlightCard
-                title="Opening"
-                start="00:00"
-                end="05:00"
-                duration={5}
-                variant="red"
-              />
-            </div>
-
-            <div>
-              <EventHighlightCard
-                title="Opening"
-                start="00:00"
-                end="05:00"
-                duration={5}
-                variant="yellow"
-              />
-            </div>
-
-            <div>
-              <EventHighlightCard
-                title="Opening"
-                start="00:00"
-                end="05:00"
-                duration={5}
-                variant="red"
-              />
-            </div>
-
-            <div>
-              <EventHighlightCard
-                title="Opening"
-                start="00:00"
-                end="05:00"
-                duration={5}
-                variant="red"
-              />
-            </div>
+            {eventHighlights.map((event, idx) => {
+              const variant = getVariant(savedVariant);
+              savedVariant = variant;
+              console.log(savedVariant);
+              return (
+                <div key={idx}>
+                  <EventHighlightCard
+                    title={event.title}
+                    start={event.start}
+                    end={event.end}
+                    duration={event.duration}
+                    variant={variant}
+                    goTo={goTo}
+                  />
+                </div>
+              );
+            })}
           </Slider>
         </Box>
       </Box>

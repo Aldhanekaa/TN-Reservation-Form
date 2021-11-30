@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Stack } from "@mui/material";
 
 const BoxCard = styled.div`
-  width: 230px;
+  width: auto;
 
   border: 2px #a8bccf solid;
   border-radius: 20px;
@@ -15,6 +15,15 @@ const BoxCard = styled.div`
     border: 2px #e3f2ff solid;
   }
 `;
+
+function StringToSeconds(value: string) {
+  var a = value.split(":"); // split it at the colons
+
+  // minutes are worth 60 seconds. Hours are worth 60 minutes.
+  var seconds = +a[0] * 60 * 60 + +a[1] * 60 + +a[2];
+
+  return seconds;
+}
 
 function Variant(variant: "red" | "green" | "yellow" | "blue") {
   switch (variant) {
@@ -40,15 +49,22 @@ export default function EventHighlightCard({
   duration,
   start,
   end,
+  goTo,
 }: {
   start: string;
   end: string;
   duration: number;
   variant: "red" | "green" | "yellow" | "blue";
   title: string;
+  goTo: (seconds: number) => Promise<void>;
 }) {
   return (
-    <BoxCard style={{ backgroundColor: Variant(variant) }}>
+    <BoxCard
+      style={{ backgroundColor: Variant(variant) }}
+      onClick={() => {
+        goTo(StringToSeconds(start));
+      }}
+    >
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <h4 style={{ fontSize: "15px", cursor: "pointer" }}>{title}</h4>
         <p style={{ fontSize: "10px", color: "#DCE0E3" }}>{duration} m</p>
