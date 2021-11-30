@@ -407,7 +407,7 @@ export default function Main() {
                     defaultValue={currentTime}
                     marks={marks}
                     min={0}
-                    max={currentDuration}
+                    max={(liveEventEnds - liveEventStarts) / 1000}
                     valueLabelDisplay="auto"
                     size="small"
                     // @ts-ignore

@@ -23,7 +23,7 @@ export default function LiveEventPage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   // const id = getCookie("id", { req, res });
   // if (!id) {
   //   return {
