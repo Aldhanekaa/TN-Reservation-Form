@@ -109,7 +109,7 @@ export default function Main() {
   const [width, height] = useWindowSize();
   const [muted, setMuted] = useState(false);
   const [isPlaying, setPlaying] = useState(true);
-  const [stateChange, setStateChange] = useState(0);
+  const [stateChange, setStateChange] = useState(-1);
   const [currentTime, setCurrentTime] = useState(0);
   const [currentDuration, setCurrentDuration] = useState(0);
 
@@ -177,29 +177,29 @@ export default function Main() {
   });
 
   React.useEffect(() => {
-    setInterval(() => {
+    setInterval(async () => {
       setCurrentTimeFunc();
-      getDuration();
     }, 1000);
   }, []);
 
-  async function getDuration() {
-    const now = Date.now();
-
-    if (now < liveEventEnds) {
-      const currentDuration =
-        // @ts-ignore
-        await reactPlayer.current.internalPlayer.getDuration();
-      setCurrentDuration(currentDuration);
+  React.useEffect(() => {
+    if (currentDuration == 0) {
+      setCurrentDuration(currentTime);
+    } else {
+      setCurrentDuration(currentDuration + 1);
     }
-  }
+  }, [new Date().getSeconds()]);
 
   async function setCurrentTimeFunc() {
     if (isPlaying) {
-      const currentTime =
-        // @ts-ignore
-        await reactPlayer.current.internalPlayer.getCurrentTime();
-      setCurrentTime(currentTime);
+      if (currentTime == 0) {
+        const currentTime =
+          // @ts-ignore
+          await reactPlayer.current.internalPlayer.getCurrentTime();
+        setCurrentTime(currentTime);
+      } else {
+        setCurrentTime(currentTime + 1);
+      }
     }
   }
 
@@ -292,6 +292,7 @@ export default function Main() {
             onError={() => {}}
             onReady={() => handlePlay()}
             onStateChange={(e) => {
+              console.log(e.data);
               setStateChange(e.data);
             }}
             onPlaybackRateChange={() => {
@@ -404,10 +405,9 @@ export default function Main() {
                       reactPlayer.current.internalPlayer.seekTo(values, true);
                     }}
                     aria-label="Always visible"
-                    defaultValue={currentTime}
                     marks={marks}
                     min={0}
-                    max={(liveEventEnds - liveEventStarts) / 1000}
+                    max={currentDuration}
                     valueLabelDisplay="auto"
                     size="small"
                     // @ts-ignore
@@ -474,9 +474,7 @@ export default function Main() {
                         }}
                       >
                         {convertHMS(String(currentTime))} /{" "}
-                        {convertHMS(
-                          String((liveEventEnds - liveEventStarts) / 1000)
-                        )}
+                        {convertHMS(String(currentDuration))}
                       </p>
                     </Box>
 
