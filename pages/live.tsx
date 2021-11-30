@@ -24,26 +24,26 @@ export default function LiveEventPage() {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const id = getCookie("id", { req, res });
-  if (!id) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-    };
-  }
-  // @ts-ignore
-  const reservation = await getReservation(id);
+  // const id = getCookie("id", { req, res });
+  // if (!id) {
+  //   return {
+  //     redirect: {
+  //       permanent: false,
+  //       destination: "/",
+  //     },
+  //   };
+  // }
+  // // @ts-ignore
+  // const reservation = await getReservation(id);
 
-  if (reservation.status == "error") {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-    };
-  }
+  // if (reservation.status == "error") {
+  //   return {
+  //     redirect: {
+  //       permanent: false,
+  //       destination: "/",
+  //     },
+  //   };
+  // }
 
   return {
     props: {},
