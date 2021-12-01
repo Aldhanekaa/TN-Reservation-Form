@@ -45,7 +45,7 @@ export default function AdminPage() {
         onChange={handleChange}
         aria-label="disabled tabs example"
       >
-        <Tab label="Unreserved Seats" />
+        <Tab label="Live " />
         <Tab label="Reserved Seats" />
         <Tab label="Registered Seats" />
       </Tabs>

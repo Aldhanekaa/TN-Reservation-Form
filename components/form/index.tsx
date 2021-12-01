@@ -416,7 +416,7 @@ export default function MainForm({
                     fontWeight: 500,
                   }}
                 >
-                  Status Pengunjung : <b>{values.statusVisitor}</b>
+                  Status Penonton : <b>{values.statusVisitor}</b>
                 </Typography>
               </Box>
 
