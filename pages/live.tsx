@@ -13,8 +13,8 @@ import socket from "socket/index";
 import { NextSeo } from "next-seo";
 
 export default function LiveEventPage(props: any) {
-  // socket.connect();
-  // socket.emit("setSelf", props);
+  socket.connect();
+  socket.emit("setSelf", props);
 
   return (
     <>
