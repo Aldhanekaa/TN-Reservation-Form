@@ -6,6 +6,7 @@ import {
   FormHelperText,
   Box,
   Autocomplete,
+  Divider,
 } from "@mui/material";
 import { FormikErrors } from "formik";
 import { FormSchemaI } from "./FormSchema";
@@ -16,9 +17,11 @@ import { ReservationI } from "model/reservation";
 export default function DataSiswa({
   errors,
   setFieldValue,
-  namaLengkapSiswa,
+  namaPengunjung,
   id,
   levelSiswa,
+  orangTua,
+  namaLengkapSiswa,
 }: {
   errors: FormikErrors<FormSchemaI>;
   getFieldProps: (input: string) => any;
@@ -27,9 +30,12 @@ export default function DataSiswa({
     value: any,
     shouldValidate?: boolean | undefined
   ) => Promise<FormikErrors<FormSchemaI>> | Promise<void>;
+  namaPengunjung: string;
   namaLengkapSiswa: string;
+
   levelSiswa: number;
   id: string;
+  orangTua: boolean;
 }) {
   const [daftarSiswa, setDaftarSiswa] = React.useState<Array<ReservationI>>([]);
   const [gender, setGender] = React.useState<"L" | "P">("L");
@@ -67,6 +73,8 @@ export default function DataSiswa({
 
   return (
     <>
+      <Divider sx={{ mt: 2 }} />
+
       <FormControl
         fullWidth
         sx={{ mt: 3, fontFamily: "outfitFont", fontWeight: 500 }}

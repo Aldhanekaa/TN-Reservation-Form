@@ -35,9 +35,17 @@ export interface AuthMain {
 export interface AuthSuccess {
   type: AUTH_ACTIONS.AUTH_LOGIN_SUCCESS | AUTH_ACTIONS.AUTH_SIGNUP_SUCCESS;
   me: {
+    statusVisitor:
+      | "Mentor"
+      | "Siswa"
+      | "Orang Tua"
+      | "Lainnya"
+      | "Saudara"
+      | "";
+    levelSiswa: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+    namaPengunjung: string;
+    namaLengkapSiswa: string;
     id: string;
-    name: string;
-    level: number;
   };
 }
 
@@ -58,7 +66,19 @@ export const UserSignup = (form: { username: string; password: string }) => ({
 });
 
 export const UserLoginSuccess =
-  (user: { id: string; name: string; level: number }) =>
+  (user: {
+    statusVisitor:
+      | "Mentor"
+      | "Siswa"
+      | "Orang Tua"
+      | "Lainnya"
+      | "Saudara"
+      | "";
+    levelSiswa: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+    namaPengunjung: string;
+    namaLengkapSiswa: string;
+    id: string;
+  }) =>
   async (dispatch: Dispatch<AuthDispatchTypes>) => {
     dispatch<AuthSuccess>({
       type: AUTH_ACTIONS.AUTH_LOGIN_SUCCESS,

@@ -7,7 +7,7 @@ import MainWrapper from "components/main/mainWrapper";
 // import Speakers from "components/main/speakers";
 
 import getReservation from "utils/getReservation";
-import { getCookie } from "cookies-next";
+import { getCookie, getCookies } from "cookies-next";
 import socket from "socket/index";
 
 import { NextSeo } from "next-seo";
@@ -15,7 +15,6 @@ import { NextSeo } from "next-seo";
 export default function LiveEventPage(props: any) {
   socket.connect();
   socket.emit("setSelf", props);
-  console.log(socket);
 
   return (
     <>
@@ -33,8 +32,12 @@ export default function LiveEventPage(props: any) {
 
 // @ts-ignore
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const cookies = getCookies({ req, res });
   const id = getCookie("id", { req, res });
-  if (!id) {
+  const statusPengunjung = String(getCookie("statusVisitor", { req, res }));
+  const namaPengunjung = String(getCookie("namaPengunjung", { req, res }));
+
+  if (statusPengunjung == "") {
     return {
       redirect: {
         permanent: false,
@@ -42,19 +45,47 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       },
     };
   }
-  // @ts-ignore
-  const reservation = await getReservation(id);
 
-  if (reservation.status == "error") {
+  if (statusPengunjung == "Siswa" && id == "") {
     return {
       redirect: {
         permanent: false,
         destination: "/",
       },
+    };
+  }
+
+  if (statusPengunjung == "Siswa" && id != "") {
+    // @ts-ignore
+    const reservation = await getReservation(id);
+
+    if (reservation.status == "error") {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/",
+        },
+      };
+    }
+
+    return {
+      props: reservation.item,
+    };
+  }
+
+  if (
+    ["Orang Tua", "Mentor", "Lainnya", "Saudara"].includes(statusPengunjung) &&
+    namaPengunjung != ""
+  ) {
+    return {
+      props: cookies,
     };
   }
 
   return {
-    props: reservation.item,
+    redirect: {
+      permanent: false,
+      destination: "/",
+    },
   };
 };

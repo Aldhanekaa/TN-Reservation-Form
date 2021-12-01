@@ -26,7 +26,6 @@ export default function MyApp(props: MyAppProps) {
     <Provider store={store}>
       <CacheProvider value={emotionCache}>
         <Head>
-          <title>My page</title>
           <meta name="viewport" content="initial-scale=1, width=device-width" />
           <meta
             httpEquiv="Content-Security-Policy"

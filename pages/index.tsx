@@ -14,10 +14,23 @@ const Home: NextPage = () => {
 
   async function p() {
     const id = getCookie("id");
-    console.log(id);
-    // @ts-ignore
-    const reservation = await getReservation(id);
-    if (reservation.item) {
+    const statusPengunjung = String(getCookie("statusVisitor"));
+    const namaPengunjung = String(getCookie("namaPengunjung"));
+
+    if (statusPengunjung == "Siswa" && id != "") {
+      // @ts-ignore
+      const reservation = await getReservation(id);
+      if (reservation.item) {
+        router.push("/live");
+      }
+    }
+
+    if (
+      ["Orang Tua", "Mentor", "Lainnya", "Saudara"].includes(
+        statusPengunjung
+      ) &&
+      namaPengunjung != ""
+    ) {
       router.push("/live");
     }
 
@@ -31,13 +44,13 @@ const Home: NextPage = () => {
   if (!loaded) {
     return (
       <>
-        <Head>
+        <head>
           <NextSeo
             title="TechnoNatura Art Exhibition Live Event | Login"
             description="Tonton Acara Art Exhibition yang Diselenggrakan TechnoNatura melalui link ini!"
           />
           <link rel="icon" href="/favicon.ico" />
-        </Head>
+        </head>
         <Container
           sx={{
             height: "100vh",
@@ -56,13 +69,13 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <Head>
+      <head>
         <NextSeo
           title="TechnoNatura Art Exhibition Live Event | Login"
           description="Tonton Acara Art Exhibition yang Diselenggrakan TechnoNatura melalui link ini!"
         />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </head>
       <Layout />
     </>
   );

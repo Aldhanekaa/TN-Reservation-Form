@@ -12,6 +12,7 @@ import {
   Stack,
   Button,
   LinearProgress,
+  Divider,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import FormSchema, { FormSchemaI } from "./FormSchema";
@@ -83,7 +84,7 @@ export default function MainForm({
     initialValues: {
       // @ts-ignore
       levelSiswa: Math.floor(Math.random() * 9) + 1,
-      namaLengkapSiswa: "",
+      namaPengunjung: "",
       id: "",
       statusVisitor: "",
     },
@@ -93,43 +94,30 @@ export default function MainForm({
 
       const reservedSeat = await ReserveSeat(_values);
       // console.log(reservedSeat);
-      if (reservedSeat.status == "success") {
-        const qrcode = await QRCodeGenerator.toDataURL(values.id, {
-          color: {
-            dark: "#3F5060",
-            light: "#fff",
-          },
-        });
+      const success = new Audio(
+        "https://res.cloudinary.com/dh3vfns2y/video/upload/v1637328818/01%20Hero%20Sounds/hero_decorative-celebration-02_filr7e.wav"
+      );
+      await success.play();
 
-        const success = new Audio(
-          "https://res.cloudinary.com/dh3vfns2y/video/upload/v1637328818/01%20Hero%20Sounds/hero_decorative-celebration-02_filr7e.wav"
-        );
-        await success.play();
+      setSuccessSubmitted(true);
+      setQRCodeImageURL("s");
 
-        setSuccessSubmitted(true);
-        setQRCodeImageURL(qrcode);
+      help.setSubmitting(false);
+      PrintDiv(document.querySelector(".QRCode-Card"));
+      dispatch(UserLoginSuccess(_values));
+      socket.connect();
 
-        help.setSubmitting(false);
-        PrintDiv(document.querySelector(".QRCode-Card"));
-        dispatch(
-          UserLoginSuccess({
-            id: _values.id,
-            name: _values.namaLengkapSiswa,
-            level: _values.levelSiswa,
-          })
-        );
-        socket.connect();
-        setCookies("id", _values.id);
-        console.log(socket.connected);
-        setTimeout(() => {
-          router.push("/live");
-        }, 1000);
-        return;
+      for (const property in _values) {
+        // @ts-ignore
+        setCookies(property, _values[property]);
       }
+      console.log(socket.connected);
+      setTimeout(() => {
+        router.push("/live");
+      }, 1000);
 
       setSuccessSubmitted(true);
       help.setSubmitting(false);
-
       return;
     },
   });
@@ -299,15 +287,6 @@ export default function MainForm({
 
         {currentStep == 0 && (
           <>
-            <DataSiswa
-              setFieldValue={setFieldValue}
-              errors={errors}
-              getFieldProps={getFieldProps}
-              namaLengkapSiswa={values.namaLengkapSiswa}
-              levelSiswa={values.levelSiswa}
-              id={values.id}
-            />
-
             <FormControl
               fullWidth
               sx={{ mt: 3, fontFamily: "outfitFont", fontWeight: 500 }}
@@ -347,9 +326,11 @@ export default function MainForm({
                   return selected;
                 }}
               >
+                <MenuItem value="Mentor">Mentor</MenuItem>
                 <MenuItem value="Orang Tua">Orang Tua</MenuItem>
                 <MenuItem value="Saudara">Saudara</MenuItem>
                 <MenuItem value="Siswa">Siswa</MenuItem>
+                <MenuItem value="Lainnya">Lainnya</MenuItem>
               </Select>
               <FormHelperText
                 sx={{
@@ -361,6 +342,67 @@ export default function MainForm({
                 {errors.statusVisitor}
               </FormHelperText>
             </FormControl>
+          </>
+        )}
+
+        {currentStep == 1 && (
+          <>
+            {values.statusVisitor != "Siswa" && (
+              <FormControl
+                key={"namaPengunjung"}
+                fullWidth
+                sx={{ mt: 3, fontFamily: "outfitFont" }}
+              >
+                <Typography
+                  style={{
+                    // @ts-ignore
+                    color: errors["namaPengunjung"] ? "#E2403D" : "#696F79",
+                    fontSize: "16px",
+                    fontFamily: "outfitFont",
+                    fontWeight: 500,
+                  }}
+                >
+                  Nama Pengunjung
+                </Typography>
+                <StyledInputElement
+                  id="outlined-textarea"
+                  placeholder="Nama"
+                  multiline
+                  sx={{ mt: 1, width: "100%", fontFamily: "outfitFont" }}
+                  {...getFieldProps("namaPengunjung")}
+                  // @ts-ignore
+                  error={Boolean(errors["namaPengunjung"])}
+                  // @ts-ignore
+                />
+                <FormHelperText
+                  variant="outlined"
+                  sx={{
+                    color: "#E2403D",
+                    fontFamily: "outfitFont",
+                    fontWeight: 500,
+                  }}
+                >
+                  {
+                    // @ts-ignore
+                    errors["namaPengunjung"]
+                  }
+                </FormHelperText>
+              </FormControl>
+            )}
+
+            {(values.statusVisitor == "Orang Tua" ||
+              values.statusVisitor == "Siswa") && (
+              <DataSiswa
+                setFieldValue={setFieldValue}
+                errors={errors}
+                getFieldProps={getFieldProps}
+                namaLengkapSiswa={values.namaLengkapSiswa}
+                namaPengunjung={values.namaPengunjung}
+                levelSiswa={values.levelSiswa}
+                id={values.id}
+                orangTua={values.statusVisitor == "Orang Tua" ? true : false}
+              />
+            )}
           </>
         )}
 
@@ -390,25 +432,20 @@ export default function MainForm({
                   Verifikasi Data Form
                 </Typography>
                 <br />
-                <Typography
-                  sx={{
-                    color: "text.secondary",
-                    fontFamily: "outfitFont",
-                    fontWeight: 500,
-                  }}
-                >
-                  Nama Siswa : <b>{values.namaLengkapSiswa}</b>
-                </Typography>
-                <Typography
-                  sx={{
-                    color: "text.secondary",
-                    fontFamily: "outfitFont",
-                    fontWeight: 500,
-                  }}
-                >
-                  Level Siswa : <b>{values.levelSiswa}</b>
-                </Typography>
 
+                {["Orang Tua", "Lainnya", "Mentor", "Saudara"].includes(
+                  values.statusVisitor
+                ) && (
+                  <Typography
+                    sx={{
+                      color: "text.secondary",
+                      fontFamily: "outfitFont",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Nama Pengunjung : <b>{values.namaPengunjung}</b>
+                  </Typography>
+                )}
                 <Typography
                   sx={{
                     color: "text.secondary",
@@ -418,6 +455,31 @@ export default function MainForm({
                 >
                   Status Penonton : <b>{values.statusVisitor}</b>
                 </Typography>
+
+                {(values.statusVisitor == "Siswa" ||
+                  values.statusVisitor == "Orang Tua") && (
+                  <>
+                    <Divider sx={{ mt: 2, mb: 2 }} />{" "}
+                    <Typography
+                      sx={{
+                        color: "text.secondary",
+                        fontFamily: "outfitFont",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Nama Siswa : <b>{values.namaLengkapSiswa}</b>
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: "text.secondary",
+                        fontFamily: "outfitFont",
+                        fontWeight: 500,
+                      }}
+                    >
+                      Level Siswa : <b>{values.levelSiswa}</b>
+                    </Typography>
+                  </>
+                )}
               </Box>
 
               <SubmitButton
