@@ -11,8 +11,8 @@ import { getCookie } from "cookies-next";
 import socket from "socket/index";
 
 export default function LiveEventPage(props: any) {
-  // socket.connect();
-  // socket.emit("setSelf", props);
+  socket.connect();
+  socket.emit("setSelf", props);
 
   return (
     <>
@@ -24,30 +24,30 @@ export default function LiveEventPage(props: any) {
   );
 }
 
-// // @ts-ignore
-// export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-//   const id = getCookie("id", { req, res });
-//   if (!id) {
-//     return {
-//       redirect: {
-//         permanent: false,
-//         destination: "/",
-//       },
-//     };
-//   }
-//   // @ts-ignore
-//   const reservation = await getReservation(id);
+// @ts-ignore
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const id = getCookie("id", { req, res });
+  if (!id) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/",
+      },
+    };
+  }
+  // @ts-ignore
+  const reservation = await getReservation(id);
 
-//   if (reservation.status == "error") {
-//     return {
-//       redirect: {
-//         permanent: false,
-//         destination: "/",
-//       },
-//     };
-//   }
+  if (reservation.status == "error") {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/",
+      },
+    };
+  }
 
-//   return {
-//     props: reservation.item,
-//   };
-// };
+  return {
+    props: reservation.item,
+  };
+};
