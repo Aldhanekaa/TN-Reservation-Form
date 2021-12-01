@@ -30,9 +30,11 @@ import ReactPlayer from "react-youtube";
 import IconButton from "./IconButton";
 import { useTheme } from "@mui/material/styles";
 import EventHighlights from "./EventHighlights";
+import RealtimeVisitor from "./realtimeVisitor";
 
 import styled from "@emotion/styled";
 
+import theme from "theme/theme";
 const ColourfulText = styled.p`
   animation: colorfultext 4s ease infinite;
   animation-fill-mode: forwards;
@@ -118,12 +120,18 @@ function convertHMS(value: string) {
   return hours + ":" + minutes + ":" + seconds; // Return is HH : MM : SS
 }
 
-export default function Main() {
+export default function Main({
+  currentDuration,
+  setCurrentDuration,
+}: {
+  currentDuration: number;
+  setCurrentDuration: (value: number) => void;
+}) {
   const liveEventStarts = new Date(
-    "Dec 1 2021 09:00:00 GMT+0700 (Western Indonesia Time)"
+    "Dec 2 2021 09:00:00 GMT+0700 (Western Indonesia Time)"
   ).getTime();
   const liveEventEnds = new Date(
-    "Dec 1 2021 11:30:00 GMT+0700 (Western Indonesia Time)"
+    "Dec 2 2021 11:30:00 GMT+0700 (Western Indonesia Time)"
   ).getTime();
 
   const [width, height] = useWindowSize();
@@ -133,7 +141,6 @@ export default function Main() {
   const [isPlaying, setPlaying] = useState(true);
   const [stateChange, setStateChange] = useState(-1);
   const [currentTime, setCurrentTime] = useState(0);
-  const [currentDuration, setCurrentDuration] = useState(0);
 
   const theme = useTheme();
   const reactPlayer = React.useRef(null);
@@ -210,6 +217,12 @@ export default function Main() {
 
   React.useEffect(() => {
     getDuration();
+
+    const now = Date.now();
+
+    if (now > liveEventEnds && currentDuration == 0) {
+      setLive(false);
+    }
   }, [new Date().getSeconds()]);
 
   async function SetLiveEventDuration() {
@@ -227,18 +240,18 @@ export default function Main() {
   async function getDuration() {
     const now = Date.now();
 
-    if (!isLive) {
+    if (!isLive && currentDuration != 0) {
       const currentDurationNow =
         // @ts-ignore
         await reactPlayer.current.internalPlayer.getDuration();
       setCurrentDuration(currentDurationNow);
-      setLive(false);
     }
 
     if (isLive && now < liveEventEnds) {
       if (currentDuration == 0) {
         setCurrentDuration(currentTime);
       } else {
+        console.log("s");
         setCurrentDuration(currentDuration + 1);
       }
     }
@@ -330,7 +343,7 @@ export default function Main() {
             onPlay={() => {
               setStarted(true);
             }}
-            videoId="DX5CD_MQTEg"
+            videoId="Ohi7u5sC1SE"
             id="react-player"
             className="fd"
             opts={{
@@ -482,13 +495,14 @@ export default function Main() {
                       color: "#fff",
                       height: 4,
                       margin: 0,
-                      padding: 0,
+                      padding: "0px",
                       "& .MuiSlider-markLabel": {
                         display: "none",
                       },
                       "& .MuiSlider-mark": {
                         width: "5px",
                         height: "5px",
+                        padding: "0px",
                       },
                       "& .MuiSlider-thumb": {
                         width: 8,
@@ -496,20 +510,25 @@ export default function Main() {
                         "&:before": {
                           boxShadow: "0 2px 12px 0 rgba(0,0,0,0.4)",
                         },
+                        padding: "0px",
+
                         "&:hover, &.Mui-focusVisible": {
                           boxShadow: `0px 0px 0px 8px ${
                             theme.palette.mode === "dark"
                               ? "rgb(255 255 255 / 16%)"
                               : "rgb(0 0 0 / 16%)"
                           }`,
+                          padding: "0px",
                         },
                         "&.Mui-active": {
                           width: 20,
                           height: 20,
+                          padding: "0px",
                         },
                       },
                       "& .MuiSlider-rail": {
                         opacity: 0.28,
+                        padding: "0px",
                       },
                     }}
                   />
@@ -600,19 +619,18 @@ export default function Main() {
           color: "#F3FAFF",
         }}
       >
-        <Stack direction="row" justifyContent="space-between">
-          <DivSection
-            style={{
-              border: "2px #EA543F solid",
-              fontWeight: 300,
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <IconButton src={eye} width="25px" height="25px" />
-            <b style={{ marginLeft: "5px", marginRight: "5px" }}>100</b>{" "}
-            Visitors Are Watching
-          </DivSection>
+        <Stack
+          sx={{
+            [theme.breakpoints.down("md")]: {
+              flexDirection: "column",
+            },
+            [theme.breakpoints.up("md")]: {
+              flexDirection: "row",
+            },
+          }}
+          justifyContent="space-between"
+        >
+          <RealtimeVisitor />
 
           <Box sx={{ fontWeight: 600, display: "flex" }}>
             <DivSection

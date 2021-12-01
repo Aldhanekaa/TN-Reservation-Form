@@ -15,19 +15,19 @@ export default [
     start: "00:15:00",
     end: "00:25:00",
     duration: 10,
-    title: "Pembukaan Live Performance",
+    title: "Live Perfomance #1",
   },
   {
     start: "00:25:00",
     end: "00:30:00",
     duration: 5,
-    title: "Live Perfome (Dica dan ilmiyya)",
+    title: "Live Perfomance #2",
   },
   {
     start: "00:30:00",
     end: "00:35:00",
     duration: 5,
-    title: "Live Perfome (Risa, ega, azmi)",
+    title: "Live Perfomance #3",
   },
   {
     start: "00:35:00",
@@ -45,13 +45,13 @@ export default [
     start: "00:45:00",
     end: "00:50:00",
     duration: 5,
-    title: "Live Perfome wut??",
+    title: "Live Perfomance level 8",
   },
   {
     start: "00:50:00",
     end: "00:55:00",
     duration: 5,
-    title: "Live Perfome wut-",
+    title: "Live Perfomance level 9",
   },
   {
     start: "00:55:00",

@@ -69,7 +69,7 @@ export default function Login({
                 fontSize: "55px",
                 fontFamily: "outfitFont",
                 fontWeight: 500,
-                color: "#696F79",
+                color: "#fff",
               }}
             />
             <Typography
@@ -77,7 +77,7 @@ export default function Login({
                 fontSize: "30px",
                 fontFamily: "outfitFont",
                 fontWeight: 600,
-                color: "#696F79",
+                color: "#fff",
               }}
             >
               ADX 2021 , Admin Login
@@ -86,7 +86,7 @@ export default function Login({
           <FormControl fullWidth sx={{ mt: 3 }}>
             <Typography
               style={{
-                color: errors.username ? "#E2403D" : "#696F79",
+                color: errors.username ? "#E2403D" : "#fff",
                 fontSize: "16px",
                 fontFamily: "outfitFont",
                 fontWeight: 500,
@@ -136,7 +136,7 @@ export default function Login({
           <FormControl fullWidth sx={{ mt: 3 }}>
             <Typography
               style={{
-                color: errors.password ? "#E2403D" : "#696F79",
+                color: errors.password ? "#E2403D" : "#fff",
                 fontSize: "16px",
                 fontFamily: "outfitFont",
                 fontWeight: 500,

@@ -34,15 +34,15 @@ const Button = styled.div`
 function getVariant(variant: "red" | "green" | "yellow" | "blue" | "#fff") {
   switch (variant) {
     case "red":
-      return "red";
+      return "yellow";
       break;
     case "green":
-      return "green";
+      return "blue";
 
     case "yellow":
-      return "yellow";
+      return "green";
     case "blue":
-      return "blue";
+      return "red";
 
     default:
       return "red";
@@ -217,7 +217,6 @@ export default function EventHighlights({
             {eventHighlights.map((event, idx) => {
               const variant = getVariant(savedVariant);
               savedVariant = variant;
-              console.log(savedVariant);
               return (
                 <div key={idx}>
                   <EventHighlightCard

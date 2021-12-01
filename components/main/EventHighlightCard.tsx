@@ -59,13 +59,20 @@ export default function EventHighlightCard({
   goTo: (seconds: number) => Promise<void>;
 }) {
   return (
-    <BoxCard
-      style={{ backgroundColor: Variant(variant) }}
-      onClick={() => {
-        goTo(StringToSeconds(start));
-      }}
-    >
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+    <BoxCard style={{ backgroundColor: Variant(variant) }}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        onClick={() => {
+          goTo(StringToSeconds(start));
+        }}
+        sx={{
+          ":hover": {
+            textDecoration: "underline",
+          },
+        }}
+      >
         <h4 style={{ fontSize: "15px", cursor: "pointer" }}>{title}</h4>
         <p style={{ fontSize: "10px", color: "#DCE0E3" }}>{duration} m</p>
       </Stack>
