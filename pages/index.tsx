@@ -20,25 +20,25 @@ const Home: NextPage = () => {
   );
 };
 
-// @ts-ignore
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-  const id = getCookie("id", { req, res });
+// // @ts-ignore
+// export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+//   const id = getCookie("id", { req, res });
 
-  // @ts-ignore
-  const reservation = await getReservation(id);
+//   // @ts-ignore
+//   const reservation = await getReservation(id);
 
-  if (reservation.item) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/live",
-      },
-    };
-  }
+//   if (reservation.item) {
+//     return {
+//       redirect: {
+//         permanent: false,
+//         destination: "/live",
+//       },
+//     };
+//   }
 
-  return {
-    props: {},
-  };
-};
+//   return {
+//     props: {},
+//   };
+// };
 
 export default Home;

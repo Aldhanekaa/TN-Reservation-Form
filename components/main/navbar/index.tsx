@@ -85,7 +85,7 @@ export default function NavbarMain() {
         >
           <Image src={Logoo} width={200} height={75}></Image>
           <Box>
-            <OnlineExhi href="https://adx.technonatura.sch.id">
+            <OnlineExhi href="https://infinityproject.my.id">
               Online Exhibition
             </OnlineExhi>
             <ArtStepsButton>Art Steps</ArtStepsButton>
