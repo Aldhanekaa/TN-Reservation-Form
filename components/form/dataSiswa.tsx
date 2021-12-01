@@ -61,7 +61,7 @@ export default function DataSiswa({
     setFetchingSiswa(true);
     const siswa = await getSiswa(levelSiswa);
 
-    setDaftarSiswa(siswa.item);
+    setDaftarSiswa(siswa.items);
     setFetchingSiswa(false);
   }
 
@@ -157,7 +157,6 @@ export default function DataSiswa({
               placeholder="Nama Lengkap Siswa"
               {...params}
               error={Boolean(errors.namaLengkapSiswa)}
-              sx={{ textTransform: "lowercase" }}
             />
           )}
           renderOption={(props, option) => (
