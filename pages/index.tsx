@@ -3,15 +3,15 @@ import Head from "next/head";
 import Layout from "components/Layout/index";
 import { getCookie } from "cookies-next";
 import getReservation from "utils/getReservation";
+import { NextSeo } from "next-seo";
 
 const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>TechnoNatura Art Exhibition Reservation Form</title>
-        <meta
-          name="description"
-          content="Reservation Form for TechnoNatura Art Exhibition 2021"
+        <NextSeo
+          title="TechnoNatura Art Exhibition Live Event | Login"
+          description="Tonton Acara Art Exhibition yang Diselenggrakan TechnoNatura melalui link ini!"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>

@@ -10,12 +10,18 @@ import getReservation from "utils/getReservation";
 import { getCookie } from "cookies-next";
 import socket from "socket/index";
 
+import { NextSeo } from "next-seo";
+
 export default function LiveEventPage(props: any) {
   // socket.connect();
   // socket.emit("setSelf", props);
 
   return (
     <>
+      <NextSeo
+        title="TechnoNatura Art Exhibition Live Event"
+        description="Tempat Kumpul Acara Art Exhibition yang Diselenggrakan TechnoNatura."
+      />
       <Navbar />
       <MainWrapper />
       {/* <Speakers /> */}

@@ -5,7 +5,7 @@ export default async function idk(id: string): Promise<{
   status: "error" | "success";
 }> {
   const server = await axios.post(
-    `${process.env.NEXT_PUBLIC_SERVER}/register_reservation`,
+    `${process.env.NEXT_PUBLIC_SERVER}/api/register_reservation`,
     {
       id: id,
       dateRegistered: String(Date.now()),

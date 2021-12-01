@@ -1,7 +1,5 @@
 import axios from "axios";
-import { ReservationI } from "model/reservation";
 import { FormSchemaI } from "components/form/FormSchema";
-import { getSessionByLevel } from "./getSession";
 
 export default async function idk(values: FormSchemaI): Promise<{
   message: string;
@@ -16,7 +14,7 @@ export default async function idk(values: FormSchemaI): Promise<{
         status: "success" | "error";
       };
     }
-  >(`${process.env.NEXT_PUBLIC_SERVER}/register_reservation`, {
+  >(`${process.env.NEXT_PUBLIC_SERVER}/api/register_reservation`, {
     id: values.id,
   });
   return server.data;

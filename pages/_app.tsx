@@ -28,10 +28,10 @@ export default function MyApp(props: MyAppProps) {
         <Head>
           <title>My page</title>
           <meta name="viewport" content="initial-scale=1, width=device-width" />
-          {/* <meta
+          <meta
             httpEquiv="Content-Security-Policy"
-            content="upgrade-insecure-requests"
-          /> */}
+            content="block-all-mixed-content"
+          />
         </Head>
 
         <ThemeConfig>

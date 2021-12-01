@@ -7,7 +7,7 @@ export default async function idk(id: string): Promise<{
   status: "error" | "success";
 }> {
   const server = await axios.get(
-    `${process.env.NEXT_PUBLIC_SERVER}/reservation/${id}`
+    `${process.env.NEXT_PUBLIC_SERVER}/api/student/${id}`
   );
   return server.data;
 }
