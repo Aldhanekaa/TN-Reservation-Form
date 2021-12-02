@@ -52,8 +52,9 @@ export default function MainWrapper() {
     });
 
     socket.on("broadcast-message", (data) => {
+      console.log(data);
       toast(data.msg, {
-        duration: data.duration,
+        duration: data.duration || 3000,
       });
     });
   }, []);

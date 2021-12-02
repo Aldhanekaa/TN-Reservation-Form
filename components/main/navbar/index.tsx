@@ -2,6 +2,7 @@ import { Container, Stack, Box } from "@mui/material";
 import Image from "next/image";
 import Logoo from "../../../public/logoo.svg";
 import styled from "@emotion/styled";
+import toast from "react-hot-toast";
 
 const ArtStepsButton = styled.button`
   width: 140px;
@@ -85,10 +86,16 @@ export default function NavbarMain() {
         >
           <Image src={Logoo} width={200} height={75}></Image>
           <Box>
-            <OnlineExhi href="https://infinityproject.my.id">
+            <OnlineExhi target="_blank" href="https://infinityproject.my.id">
               Online Exhibition
             </OnlineExhi>
-            <ArtStepsButton>Art Steps</ArtStepsButton>
+            <ArtStepsButton
+              onClick={() => {
+                toast("Art Steps isn't opened for public yet :(");
+              }}
+            >
+              Art Steps
+            </ArtStepsButton>
           </Box>
         </Stack>
       </Box>

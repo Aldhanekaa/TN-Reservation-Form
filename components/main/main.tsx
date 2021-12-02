@@ -34,6 +34,8 @@ import RealtimeVisitor from "./realtimeVisitor";
 
 import styled from "@emotion/styled";
 
+import BroadCastMessage from "./broadcastMessage";
+
 import theme from "theme/theme";
 const ColourfulText = styled.p`
   animation: colorfultext 4s ease infinite;
@@ -322,6 +324,7 @@ export default function Main({
 
   return (
     <Container sx={{ pt: 5, pb: 5 }}>
+      {/* <BroadCastMessage /> */}
       <Box
         sx={{
           width: "100%",
