@@ -52,7 +52,6 @@ export default function DataSiswa({
   // const gradeData = (value) =>
   //   grades.findIndex((grade) => grade.grade == value).day;
 
-  console.log(daftarSiswa);
   const daftarSiswaOptions = daftarSiswa.map((option) => {
     return {
       gender: option.Gender == "L" ? "Laki" : "Perempuan",
