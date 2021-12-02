@@ -32,7 +32,7 @@ export default function MainWrapper() {
   const liveEventStarts = new Date(
     "Dec 2 2021 11:30:00 GMT+0700 (Western Indonesia Time)"
   ).getTime();
-  const [shouldStart, setShouldStart] = useState(false);
+  const [shouldStart, setShouldStart] = useState(true);
   // const [timeRemaining, setTimeRemaining] = useState(
   //   (liveEventStarts - Date.now()) / 1000
   // );
