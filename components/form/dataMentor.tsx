@@ -11,6 +11,7 @@ import {
 import { FormikErrors } from "formik";
 import { FormSchemaI } from "./FormSchema";
 import grades from "data/grades";
+import datamentor from "data/dataMentor.json";
 
 export default function DataSiswa({
   errors,
@@ -36,7 +37,8 @@ export default function DataSiswa({
       Nama: string;
       Gender: "L" | "P";
     }>
-  >([]);
+    // @ts-ignore
+  >(datamentor);
   const [gender, setGender] = React.useState<"L" | "P">("L");
   const [fetchingSiswa, setFetchingSiswa] = React.useState<boolean>(false);
 
@@ -92,12 +94,12 @@ export default function DataSiswa({
               // @ts-ignore
               setGender(value?.firstLetter);
               setFieldValue("namaPengunjung", value?.value);
-              setFieldValue("genderSiswa", value?.gender);
+              setFieldValue("genderPengunjung", value?.gender);
             }
           }}
           renderInput={(params) => (
             <TextField
-              placeholder="Nama Lengkap Siswa"
+              placeholder="Nama Lengkap Mentor"
               {...params}
               error={Boolean(errors.namaPengunjung)}
             />
