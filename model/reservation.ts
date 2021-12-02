@@ -1,15 +1,7 @@
 export interface ReservationI {
-  gender: "L" | "P";
+  statusVisitor: "Mentor" | "Siswa" | "Orang Tua" | "Lainnya" | "Saudara" | "";
+  levelSiswa: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+  namaPengunjung: string;
+  namaLengkapSiswa: string;
   id: string;
-  level: string;
-  nama_lengkap: string;
-  registred: boolean;
-  reservation: {
-    reserved: boolean;
-    nama_pendamping: string;
-    status_pendamping: string;
-    nowa: string;
-    dayReserved: number;
-    sessionReserved: number;
-  };
 }

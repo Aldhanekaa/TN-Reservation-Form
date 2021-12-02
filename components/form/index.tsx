@@ -92,8 +92,6 @@ export default function MainForm({
     async onSubmit(_values, help) {
       // console.log("sdf");
 
-      const reservedSeat = await ReserveSeat(_values);
-      // console.log(reservedSeat);
       const success = new Audio(
         "https://res.cloudinary.com/dh3vfns2y/video/upload/v1637328818/01%20Hero%20Sounds/hero_decorative-celebration-02_filr7e.wav"
       );
@@ -348,46 +346,102 @@ export default function MainForm({
         {currentStep == 1 && (
           <>
             {values.statusVisitor != "Siswa" && (
-              <FormControl
-                key={"namaPengunjung"}
-                fullWidth
-                sx={{ mt: 3, fontFamily: "outfitFont" }}
-              >
-                <Typography
-                  style={{
-                    // @ts-ignore
-                    color: errors["namaPengunjung"] ? "#E2403D" : "#696F79",
-                    fontSize: "16px",
-                    fontFamily: "outfitFont",
-                    fontWeight: 500,
-                  }}
+              <>
+                <FormControl
+                  key={"namaPengunjung"}
+                  fullWidth
+                  sx={{ mt: 3, fontFamily: "outfitFont" }}
                 >
-                  Nama Pengunjung
-                </Typography>
-                <StyledInputElement
-                  id="outlined-textarea"
-                  placeholder="Nama"
-                  multiline
-                  sx={{ mt: 1, width: "100%", fontFamily: "outfitFont" }}
-                  {...getFieldProps("namaPengunjung")}
-                  // @ts-ignore
-                  error={Boolean(errors["namaPengunjung"])}
-                  // @ts-ignore
-                />
-                <FormHelperText
-                  variant="outlined"
-                  sx={{
-                    color: "#E2403D",
-                    fontFamily: "outfitFont",
-                    fontWeight: 500,
-                  }}
-                >
-                  {
+                  <Typography
+                    style={{
+                      // @ts-ignore
+                      color: errors["namaPengunjung"] ? "#E2403D" : "#696F79",
+                      fontSize: "16px",
+                      fontFamily: "outfitFont",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Nama Pengunjung
+                  </Typography>
+                  <StyledInputElement
+                    id="outlined-textarea"
+                    placeholder="Nama"
+                    multiline
+                    sx={{ mt: 1, width: "100%", fontFamily: "outfitFont" }}
+                    {...getFieldProps("namaPengunjung")}
                     // @ts-ignore
-                    errors["namaPengunjung"]
-                  }
-                </FormHelperText>
-              </FormControl>
+                    error={Boolean(errors["namaPengunjung"])}
+                    // @ts-ignore
+                  />
+                  <FormHelperText
+                    variant="outlined"
+                    sx={{
+                      color: "#E2403D",
+                      fontFamily: "outfitFont",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {
+                      // @ts-ignore
+                      errors["namaPengunjung"]
+                    }
+                  </FormHelperText>
+                </FormControl>
+                <FormControl
+                  fullWidth
+                  sx={{ mt: 3, fontFamily: "outfitFont", fontWeight: 500 }}
+                >
+                  <Typography
+                    style={{
+                      color: errors.statusVisitor ? "#E2403D" : "#ECEBEE",
+                      fontSize: "16px",
+                      fontFamily: "outfitFont",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Gender Pengunjung*
+                  </Typography>
+                  <Select
+                    {...getFieldProps("genderPengunjung")}
+                    name="genderPengunjung"
+                    error={Boolean(errors.genderPengunjung)}
+                    sx={{ mt: 1, fontFamily: "outfitFont", fontWeight: 500 }}
+                    fullWidth
+                    displayEmpty
+                    inputProps={{ "aria-label": "Without label" }}
+                    // @ts-ignore
+                    renderValue={(selected) => {
+                      if (!selected) {
+                        return (
+                          <Typography
+                            style={{
+                              color: errors.genderPengunjung
+                                ? "#E2403D"
+                                : "#ECEBEE",
+                              fontSize: "16px",
+                            }}
+                          >
+                            Status Pengunjung
+                          </Typography>
+                        );
+                      }
+                      return selected;
+                    }}
+                  >
+                    <MenuItem value="L">Laki</MenuItem>
+                    <MenuItem value="P">Perempuan</MenuItem>
+                  </Select>
+                  <FormHelperText
+                    sx={{
+                      color: "#E2403D",
+                      fontFamily: "outfitFont",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {errors.genderPengunjung}
+                  </FormHelperText>
+                </FormControl>
+              </>
             )}
 
             {(values.statusVisitor == "Orang Tua" ||

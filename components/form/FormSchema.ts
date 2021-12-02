@@ -24,6 +24,18 @@ const RegisterSchema = Yup.object().shape({
     }
     return Yup.string();
   }),
+  genderSiswa: Yup.string().when("statusVisitor", (value) => {
+    if (["Siswa", "Orang Tua"].includes(value)) {
+      return Yup.string().required("Input ini diperlukan!");
+    }
+    return Yup.string();
+  }),
+  genderPengunjung: Yup.string().when("statusVisitor", (value) => {
+    if (!["Siswa"].includes(value)) {
+      return Yup.string().required("Input ini diperlukan!");
+    }
+    return Yup.string();
+  }),
 
   statusVisitor: Yup.string().required("Input ini diperlukan!"),
 
@@ -41,6 +53,9 @@ export interface FormSchemaI {
   namaPengunjung: string;
   namaLengkapSiswa: string;
   id: string;
+
+  genderSiswa?: string;
+  genderPengunjung?: string;
 }
 
 export default RegisterSchema;

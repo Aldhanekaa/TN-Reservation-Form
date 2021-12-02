@@ -33,6 +33,11 @@ const FormSteps: Array<{
     step: 1,
     inputs: [
       {
+        label: "Gender Pengunjung",
+        input_name: "genderSiswa",
+        show: false,
+      },
+      {
         label: "Nama Pengunjung*",
         input_name: "namaPengunjung",
         show: false,
@@ -46,6 +51,11 @@ const FormSteps: Array<{
       {
         label: "Status Visitor*",
         input_name: "statusVisitor",
+        show: false,
+      },
+      {
+        label: "Gender Student",
+        input_name: "genderSiswa",
         show: false,
       },
     ],

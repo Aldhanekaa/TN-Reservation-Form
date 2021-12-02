@@ -37,7 +37,14 @@ export default function DataSiswa({
   id: string;
   orangTua: boolean;
 }) {
-  const [daftarSiswa, setDaftarSiswa] = React.useState<Array<ReservationI>>([]);
+  const [daftarSiswa, setDaftarSiswa] = React.useState<
+    Array<{
+      nama_lengkap: string;
+      level: number;
+      gender: "L" | "P";
+      id: string;
+    }>
+  >([]);
   const [gender, setGender] = React.useState<"L" | "P">("L");
   const [fetchingSiswa, setFetchingSiswa] = React.useState<boolean>(false);
 
@@ -51,6 +58,7 @@ export default function DataSiswa({
   // const gradeData = (value) =>
   //   grades.findIndex((grade) => grade.grade == value).day;
 
+  console.log(daftarSiswa);
   const daftarSiswaOptions = daftarSiswa.map((option) => {
     return {
       gender: option.gender == "L" ? "Laki" : "Perempuan",
@@ -103,6 +111,8 @@ export default function DataSiswa({
           }}
           onChange={(_event, value) => {
             if (levelSiswa != value?.value) {
+              setFieldValue("genderSiswa", "");
+
               setFieldValue("namaLengkapSiswa", "");
               setFieldValue("id", "");
               setFieldValue("levelSiswa", value?.value);
@@ -158,6 +168,7 @@ export default function DataSiswa({
               setGender(value?.firstLetter);
               setFieldValue("id", value?.id);
               setFieldValue("namaLengkapSiswa", value?.value);
+              setFieldValue("genderSiswa", value?.gender);
             }
           }}
           renderInput={(params) => (
