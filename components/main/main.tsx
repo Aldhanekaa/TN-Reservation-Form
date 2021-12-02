@@ -343,7 +343,7 @@ export default function Main({
             onPlay={() => {
               setStarted(true);
             }}
-            videoId="EiWmh7XMHaw"
+            videoId={process.env.NEXT_PUBLIC_VIDEO_ID}
             id="react-player"
             className="fd"
             opts={{
