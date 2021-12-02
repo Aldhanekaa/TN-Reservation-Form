@@ -71,7 +71,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     }
 
     return {
-      props: reservation.item,
+      props: Object.assign({}, cookies, reservation.item),
     };
   }
 
