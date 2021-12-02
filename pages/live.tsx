@@ -12,6 +12,8 @@ import socket from "socket/index";
 
 import { NextSeo } from "next-seo";
 
+import Commenter from "components/Comment";
+
 export default function LiveEventPage(props: any) {
   socket.connect();
   socket.emit("setSelf", props);
@@ -26,6 +28,8 @@ export default function LiveEventPage(props: any) {
       />
       <Navbar />
       <MainWrapper />
+
+      <Commenter />
       {/* <Speakers /> */}
       <Footer />
     </>

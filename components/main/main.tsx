@@ -138,7 +138,7 @@ export default function Main({
 
   const [width, height] = useWindowSize();
   const [muted, setMuted] = useState(false);
-  const [isLive, setLive] = useState(true);
+  const [isLive, setLive] = useState(false);
 
   const [isPlaying, setPlaying] = useState(true);
   const [stateChange, setStateChange] = useState(-1);
@@ -234,6 +234,7 @@ export default function Main({
       const currentDurationNow =
         // @ts-ignore
         await reactPlayer.current.internalPlayer.getDuration();
+      console.log("currentDurationNow", currentDurationNow);
       setCurrentDuration(currentDurationNow);
       setLive(false);
     }

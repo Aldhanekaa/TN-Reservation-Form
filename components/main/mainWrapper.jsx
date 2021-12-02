@@ -41,18 +41,16 @@ export default function MainWrapper() {
   useEffect(() => {
     setInterval(() => {
       if (Date.now() >= liveEventStarts) {
-        router.reload();
+        // router.reload();
       }
       // setTimeRemaining((liveEventStarts - Date.now()) / 1000);
     }, 1000);
 
     socket.on("reload", (s) => {
-      console.log(s);
       router.reload();
     });
 
     socket.on("broadcast-message", (data) => {
-      console.log(data);
       toast(data.msg, {
         duration: data.duration || 3000,
       });

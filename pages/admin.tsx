@@ -1,10 +1,18 @@
-import { CircularProgress, Container, Grid, Tabs, Tab } from "@mui/material";
+import {
+  CircularProgress,
+  Container,
+  Grid,
+  Tabs,
+  Tab,
+  Button,
+} from "@mui/material";
 import { useState } from "react";
 import React from "react";
 import AdminLogin from "components/login";
 import WelcomeCard from "components/WelcomeCard";
 import ScanCard from "components/ScanCard";
 
+import ReloadClients from "components/admin/ReloadClients";
 export default function AdminPage() {
   const [value, setValue] = useState(2);
 
@@ -40,13 +48,17 @@ export default function AdminPage() {
         </Grid>
       </Grid>
 
+      <ReloadClients />
+      <Button variant="outlined">Broadcast Message</Button>
+
       <Tabs
         value={value}
         onChange={handleChange}
         aria-label="disabled tabs example"
+        sx={{ mt: 2 }}
       >
-        <Tab label="Live " />
-        <Tab label="Reserved Seats" />
+        <Tab label="Siswa" />
+        <Tab label="Mentor" />
         <Tab label="Registered Seats" />
       </Tabs>
     </Container>
