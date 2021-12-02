@@ -7,6 +7,7 @@ import {
   IconButton as IconButtonMUI,
   Stack,
   Button,
+  Alert,
 } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
@@ -34,8 +35,7 @@ import RealtimeVisitor from "./realtimeVisitor";
 
 import styled from "@emotion/styled";
 
-import BroadCastMessage from "./broadcastMessage";
-
+import YtChannel from "./YtChannel";
 import theme from "theme/theme";
 const ColourfulText = styled.p`
   animation: colorfultext 4s ease infinite;
@@ -378,7 +378,7 @@ export default function Main({
             }}
           />
         </Box>
-
+        <YtChannel />
         {stateChange == -1 && (
           <Box
             sx={{
@@ -415,7 +415,6 @@ export default function Main({
             </Button>
           </Box>
         )}
-
         <Box
           sx={{
             position: "absolute",
