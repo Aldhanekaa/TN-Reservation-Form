@@ -89,13 +89,14 @@ export default function NavbarMain() {
             <OnlineExhi target="_blank" href="https://infinityproject.my.id">
               Online Exhibition
             </OnlineExhi>
-            <ArtStepsButton
-              onClick={() => {
-                toast("Art Steps isn't opened for public yet :(");
-              }}
+
+            <a
+              href="https://www.artsteps.com/view/619b945a0c36dacf00e9efcd/?currentUser"
+              target="_blank"
+              rel="noreferrer"
             >
-              Art Steps
-            </ArtStepsButton>
+              <ArtStepsButton>Art Steps</ArtStepsButton>
+            </a>
           </Box>
         </Stack>
       </Box>
