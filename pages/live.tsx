@@ -15,6 +15,8 @@ import { NextSeo } from "next-seo";
 export default function LiveEventPage(props: any) {
   socket.connect();
   socket.emit("setSelf", props);
+  console.log(socket);
+  console.log(props);
 
   return (
     <>
