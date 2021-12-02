@@ -6,6 +6,7 @@ import { Container, Box } from "@mui/material";
 import styled from "@emotion/styled";
 
 import socket from "socket";
+import toast from "react-hot-toast";
 
 const ColourfulP = styled.p`
   animation: colorfultext 3s ease infinite;
@@ -48,6 +49,12 @@ export default function MainWrapper() {
     socket.on("reload", (s) => {
       console.log(s);
       router.reload();
+    });
+
+    socket.on("broadcast-message", (data) => {
+      toast(data.msg, {
+        duration: data.duration,
+      });
     });
   }, []);
 
