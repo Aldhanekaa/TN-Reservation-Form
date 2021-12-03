@@ -12,8 +12,6 @@ import socket from "socket/index";
 
 import { NextSeo } from "next-seo";
 
-import Commenter from "components/Comment";
-
 export default function LiveEventPage(props: any) {
   socket.connect();
   socket.emit("setSelf", props);
@@ -29,7 +27,6 @@ export default function LiveEventPage(props: any) {
       <Navbar />
       <MainWrapper />
 
-      <Commenter />
       {/* <Speakers /> */}
       <Footer />
     </>
@@ -75,7 +72,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     }
 
     return {
-      props: Object.assign({}, cookies, reservation.item),
+      props: {
+        nama: cookies.namaLengkapSiswa,
+        statusVisitor: cookies.statusVisitor,
+        gender: cookies.genderSiswa,
+      },
     };
   }
 
@@ -84,7 +85,11 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     namaPengunjung != ""
   ) {
     return {
-      props: cookies,
+      props: {
+        nama: namaPengunjung,
+        statusVisitor: cookies.statusVisitor,
+        gender: cookies.genderPengunjung,
+      },
     };
   }
 

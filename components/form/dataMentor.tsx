@@ -54,7 +54,7 @@ export default function DataSiswa({
 
   const daftarSiswaOptions = daftarSiswa.map((option) => {
     return {
-      gender: option.Gender == "L" ? "Laki" : "Perempuan",
+      gender: option.Gender == "L" ? "Laki-Laki" : "Perempuan",
       value: option.Nama,
     };
   });

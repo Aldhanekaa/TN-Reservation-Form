@@ -35,8 +35,13 @@ import RealtimeVisitor from "./realtimeVisitor";
 
 import styled from "@emotion/styled";
 
-import YtChannel from "./YtChannel";
+import VirtualExhiButon from "./YtChannel";
 import theme from "theme/theme";
+
+import Commenter from "components/SideBox";
+
+import { useWindowWidth } from "@react-hook/window-size/throttled";
+
 const ColourfulText = styled.p`
   animation: colorfultext 4s ease infinite;
   animation-fill-mode: forwards;
@@ -129,6 +134,8 @@ export default function Main({
   currentDuration: number;
   setCurrentDuration: (value: number) => void;
 }) {
+  const windowWidth = useWindowWidth();
+
   const liveEventStarts = new Date(
     "Dec 2 2021 09:00:00 GMT+0700 (Western Indonesia Time)"
   ).getTime();
@@ -138,7 +145,7 @@ export default function Main({
 
   const [width, height] = useWindowSize();
   const [muted, setMuted] = useState(false);
-  const [isLive, setLive] = useState(false);
+  const [isLive, setLive] = useState(true);
 
   const [isPlaying, setPlaying] = useState(true);
   const [stateChange, setStateChange] = useState(-1);
@@ -324,349 +331,384 @@ export default function Main({
   }
 
   return (
-    <Container sx={{ pt: 5, pb: 5 }}>
-      {/* <BroadCastMessage /> */}
+    <Box
+      sx={{
+        [theme.breakpoints.up("lg")]: {
+          display: "flex",
+          pl: 5,
+        },
+        [theme.breakpoints.down("lg")]: {
+          pl: 5,
+          pr: 5,
+        },
+      }}
+    >
       <Box
         sx={{
-          width: "100%",
-          pt: 3,
+          pt: 5,
           pb: 5,
-          position: "relative",
-          borderRadius: "10px",
-          overflow: "hidden",
+          [theme.breakpoints.up("lg")]: {
+            width: "75%",
+          },
         }}
-        id="eventVideoPlayer"
       >
-        <Box
-          style={{
-            width: "100%",
-            height: isFullScreen ? `100%` : "700px",
-          }}
-        >
-          <ReactPlayer
-            onPlay={() => {
-              setStarted(true);
-            }}
-            videoId={process.env.NEXT_PUBLIC_VIDEO_ID}
-            id="react-player"
-            className="fd"
-            opts={{
-              playerVars: {
-                // https://developers.google.com/youtube/player_parameters
-                autoplay: 1,
-                disablekb: 1,
-                controls: 0,
-                showinfo: 0,
-                playsinline: 0,
-                enablejsapi: 1,
-                fs: 0,
-                color: "white",
-                modestbranding: 1,
-                rel: 1,
-              },
-              width: "100%",
-              height: isFullScreen ? `${height - 20}px` : "700px",
-            }}
-            ref={reactPlayer}
-            onError={() => {}}
-            onReady={() => handlePlay()}
-            onStateChange={(e) => {
-              console.log(e.data);
-              setStateChange(e.data);
-            }}
-            onPlaybackRateChange={() => {
-              console.log("hi!");
-            }}
-          />
-        </Box>
-        <YtChannel />
-        {stateChange == -1 && (
-          <Box
-            sx={{
-              position: "absolute",
-              top: "45%",
-              bottom: "50%",
-              left: "46%",
-              right: "50%",
-              zIndex: 99999,
-            }}
-          >
-            <Button
-              sx={{
-                ml: "2px",
-                mr: "2px",
-                background: "rgba(60, 80, 96, 1)",
-                color: "#fff",
-                boxShadow: "none",
-                transition: ".3s",
-                ":hover": {
-                  color: "rgba(63, 80, 96, 1)",
-                  background: "#fff",
-                  transform: "translateY(-5px)",
-                },
-                ":active": {
-                  transform: "translateY(-3px)",
-                },
-              }}
-              disableRipple
-              variant="contained"
-              onClick={handlePlay}
-            >
-              <PlayArrowIcon style={{ fontSize: "50px" }} />
-            </Button>
-          </Box>
-        )}
+        {/* <BroadCastMessage /> */}
         <Box
           sx={{
-            position: "absolute",
             width: "100%",
-            height: isFullScreen ? `100%` : "700px",
-
-            zIndex: 99,
-            top: 24,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
+            pt: 3,
+            position: "relative",
             borderRadius: "10px",
             overflow: "hidden",
           }}
+          id="eventVideoPlayer"
         >
           <Box
-            sx={{
+            style={{
               width: "100%",
-              height: isFullScreen ? "70px" : "0px",
-              background: "rgba(63, 80, 96, 0.8)",
-              position: "relative",
-              bottom: isFullScreen ? 0 : 0,
-              borderBottomRightRadius: "10px",
-              borderBottomLeftRadius: "10px",
+              height: isFullScreen ? `100%` : "700px",
             }}
           >
-            {isFullScreen && (
-              <Box
-                sx={{
-                  pr: 8,
-                  pl: 8,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Image src={Logoo} width={150} height={75} />
-                <IconButtonMUI>
-                  <IconButton src={Menu} width="25px" height="25px" />
-                </IconButtonMUI>
-              </Box>
-            )}
+            <ReactPlayer
+              onPlay={() => {
+                setStarted(true);
+              }}
+              videoId={process.env.NEXT_PUBLIC_VIDEO_ID}
+              id="react-player"
+              className="fd"
+              opts={{
+                playerVars: {
+                  // https://developers.google.com/youtube/player_parameters
+                  autoplay: 1,
+                  disablekb: 1,
+                  controls: 0,
+                  showinfo: 0,
+                  playsinline: 0,
+                  enablejsapi: 1,
+                  fs: 0,
+                  color: "white",
+                  modestbranding: 1,
+                  rel: 1,
+                },
+                width: "100%",
+                height: isFullScreen ? `${height - 20}px` : "700px",
+              }}
+              ref={reactPlayer}
+              onError={() => {}}
+              onReady={() => handlePlay()}
+              onStateChange={(e) => {
+                console.log(e.data);
+                setStateChange(e.data);
+              }}
+              onPlaybackRateChange={() => {
+                console.log("hi!");
+              }}
+            />
+            {/* <Commenter /> */}
           </Box>
-          <Box
-            sx={{
-              width: "100%",
-              height: "80px",
-              background: "rgba(63, 80, 96, 0.8)",
-              position: "relative",
-              bottom: isFullScreen ? 25 : 0,
-              pr: 5,
-              pl: 5,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            {isStarted && currentTime != 0 ? (
-              <>
-                {" "}
-                <Box sx={{ width: "100%" }}>
-                  <Slider
-                    onChangeCommitted={(_e, values) => {
-                      // @ts-ignore
-                      reactPlayer.current.internalPlayer.seekTo(values, true);
-                    }}
-                    aria-label="Always visible"
-                    marks={marks}
-                    min={0}
-                    max={currentDuration}
-                    defaultValue={currentTime}
-                    value={currentTime}
-                    valueLabelDisplay="auto"
-                    valueLabelFormat={(value) => {
-                      return convertHMS(String(value));
-                    }}
-                    size="small"
-                    // @ts-ignore
-                    sx={{
-                      color: "#fff",
-                      height: 4,
-                      margin: 0,
-                      padding: "0px",
-                      "& .MuiSlider-markLabel": {
-                        display: "none",
-                      },
-                      "& .MuiSlider-mark": {
-                        width: "5px",
-                        height: "5px",
-                        padding: "0px",
-                      },
-                      "& .MuiSlider-thumb": {
-                        width: 8,
-                        height: 8,
-                        "&:before": {
-                          boxShadow: "0 2px 12px 0 rgba(0,0,0,0.4)",
-                        },
-                        padding: "0px",
-
-                        "&:hover, &.Mui-focusVisible": {
-                          boxShadow: `0px 0px 0px 8px ${
-                            theme.palette.mode === "dark"
-                              ? "rgb(255 255 255 / 16%)"
-                              : "rgb(0 0 0 / 16%)"
-                          }`,
-                          padding: "0px",
-                        },
-                        "&.Mui-active": {
-                          width: 20,
-                          height: 20,
-                          padding: "0px",
-                        },
-                      },
-                      "& .MuiSlider-rail": {
-                        opacity: 0.28,
-                        padding: "0px",
-                      },
-                    }}
-                  />
-                </Box>
-                <Box>
-                  <Stack flexDirection="row" justifyContent="space-between">
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <IconButtonMUI onClick={toggleVideo}>
-                        {isPlaying ? (
-                          <PauseIcon style={{ color: "#fff" }} />
-                        ) : (
-                          <PlayArrowIcon style={{ color: "#fff" }} />
-                        )}
-                      </IconButtonMUI>
-                      <IconButtonMUI
-                        sx={{ ml: "2px", mr: "2px" }}
-                        onClick={toggleVolume}
-                      >
-                        {muted ? (
-                          <VolumeOffIcon style={{ color: "#fff" }} />
-                        ) : (
-                          <VolumeUpIcon style={{ color: "#fff" }} />
-                        )}
-                      </IconButtonMUI>
-                      <p
-                        style={{
-                          fontWeight: 200,
-                          fontSize: 10,
-                        }}
-                      >
-                        {convertHMS(String(currentTime))} /{" "}
-                        {convertHMS(String(currentDuration))}
-                      </p>
-                    </Box>
-
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      {" "}
-                      {isLive && (
-                        <Button
-                          color="inherit"
-                          variant="text"
-                          onClick={() => {
-                            setCurrentTime(currentDuration);
-
-                            // @ts-ignore
-                            reactPlayer.current.internalPlayer.seekTo(
-                              currentDuration,
-                              true
-                            );
-                          }}
-                        >
-                          <ColourfulText
-                            style={{ fontWeight: 600, fontSize: 12 }}
-                          >
-                            Live
-                          </ColourfulText>
-                        </Button>
-                      )}
-                      <IconButtonMUI
-                        sx={{ ml: "2px", mr: "2px" }}
-                        onClick={toggleFullScreenVideo}
-                      >
-                        <IconButton
-                          src={isFullScreen ? FullScreenExit : FullScreen}
-                          width="25px"
-                          height="25px"
-                        />
-                      </IconButtonMUI>
-                    </Box>
-                  </Stack>
-                </Box>
-              </>
-            ) : (
-              <LinearProgress color="inherit" />
-            )}
-          </Box>
-        </Box>
-      </Box>
-
-      <Box
-        sx={{
-          width: "100%",
-          pt: 0,
-          pb: 5,
-          position: "relative",
-          borderRadius: "10px",
-          overflow: "hidden",
-          color: "#F3FAFF",
-        }}
-      >
-        <Stack
-          sx={{
-            [theme.breakpoints.down("md")]: {
-              flexDirection: "column",
-            },
-            [theme.breakpoints.up("md")]: {
-              flexDirection: "row",
-            },
-          }}
-          justifyContent="space-between"
-        >
-          <RealtimeVisitor />
-
-          <Box sx={{ fontWeight: 600, display: "flex" }}>
-            <DivSection
-              style={{
-                border: "2px #EDA525 solid",
-                display: "flex",
-                alignItems: "center",
-                marginRight: "10px",
+          {stateChange == -1 && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: "45%",
+                bottom: "50%",
+                left: "46%",
+                right: "50%",
+                zIndex: 99999,
               }}
             >
-              <IconButton src={share} width="25px" height="25px" />
-              <p style={{ marginLeft: "5px" }}>Share</p>
-            </DivSection>
-            <Box style={{ position: "relative" }}>
-              <DivSection
-                style={{
-                  border: "2px #6ABD45 solid",
-                  display: "flex",
-                  alignItems: "center",
+              <Button
+                sx={{
+                  ml: "2px",
+                  mr: "2px",
+                  background: "rgba(60, 80, 96, 1)",
+                  color: "#fff",
+                  boxShadow: "none",
+                  transition: ".3s",
+                  ":hover": {
+                    color: "rgba(63, 80, 96, 1)",
+                    background: "#fff",
+                    transform: "translateY(-5px)",
+                  },
+                  ":active": {
+                    transform: "translateY(-3px)",
+                  },
                 }}
+                disableRipple
+                variant="contained"
+                onClick={handlePlay}
               >
-                <IconButton src={like} width="25px" height="25px" />
-                <p style={{ marginLeft: "5px" }}>Like</p>
-              </DivSection>
-              {/* <p style={{ position: "absolute", bottom: -25, fontWeight: 500 }}>
-                <b>100</b> Visitors Likes
-              </p> */}
+                <PlayArrowIcon style={{ fontSize: "50px" }} />
+              </Button>
+            </Box>
+          )}
+          <Box
+            sx={{
+              position: "absolute",
+              width: "100%",
+              height: isFullScreen ? `100%` : "700px",
+
+              zIndex: 99,
+              top: 24,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              borderRadius: "10px",
+              overflow: "hidden",
+            }}
+          >
+            <Box
+              sx={{
+                width: "100%",
+                height: isFullScreen ? "70px" : "0px",
+                background: "rgba(63, 80, 96, 0.8)",
+                position: "relative",
+                bottom: isFullScreen ? 0 : 0,
+                borderBottomRightRadius: "10px",
+                borderBottomLeftRadius: "10px",
+              }}
+            >
+              {isFullScreen && (
+                <Box
+                  sx={{
+                    pr: 8,
+                    pl: 8,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Image src={Logoo} width={150} height={75} />
+                  <IconButtonMUI>
+                    <IconButton src={Menu} width="25px" height="25px" />
+                  </IconButtonMUI>
+                </Box>
+              )}
+            </Box>
+            <Box
+              sx={{
+                width: "100%",
+                height: "80px",
+                background: "rgba(63, 80, 96, 0.8)",
+                position: "relative",
+                bottom: isFullScreen ? 25 : 0,
+                pr: 5,
+                pl: 5,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              {isStarted && currentTime != 0 ? (
+                <>
+                  {" "}
+                  <Box sx={{ width: "100%" }}>
+                    <Slider
+                      onChangeCommitted={(_e, values) => {
+                        // @ts-ignore
+                        reactPlayer.current.internalPlayer.seekTo(values, true);
+                      }}
+                      aria-label="Always visible"
+                      marks={marks}
+                      min={0}
+                      max={currentDuration}
+                      defaultValue={currentTime}
+                      value={currentTime}
+                      valueLabelDisplay="auto"
+                      valueLabelFormat={(value) => {
+                        return convertHMS(String(value));
+                      }}
+                      size="small"
+                      // @ts-ignore
+                      sx={{
+                        color: "#fff",
+                        height: 4,
+                        margin: 0,
+                        padding: "0px",
+                        "& .MuiSlider-markLabel": {
+                          display: "none",
+                        },
+                        "& .MuiSlider-mark": {
+                          width: "5px",
+                          height: "5px",
+                          padding: "0px",
+                        },
+                        "& .MuiSlider-thumb": {
+                          width: 8,
+                          height: 8,
+                          "&:before": {
+                            boxShadow: "0 2px 12px 0 rgba(0,0,0,0.4)",
+                          },
+                          padding: "0px",
+
+                          "&:hover, &.Mui-focusVisible": {
+                            boxShadow: `0px 0px 0px 8px ${
+                              theme.palette.mode === "dark"
+                                ? "rgb(255 255 255 / 16%)"
+                                : "rgb(0 0 0 / 16%)"
+                            }`,
+                            padding: "0px",
+                          },
+                          "&.Mui-active": {
+                            width: 20,
+                            height: 20,
+                            padding: "0px",
+                          },
+                        },
+                        "& .MuiSlider-rail": {
+                          opacity: 0.28,
+                          padding: "0px",
+                        },
+                      }}
+                    />
+                  </Box>
+                  <Box>
+                    <Stack flexDirection="row" justifyContent="space-between">
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <IconButtonMUI onClick={toggleVideo}>
+                          {isPlaying ? (
+                            <PauseIcon style={{ color: "#fff" }} />
+                          ) : (
+                            <PlayArrowIcon style={{ color: "#fff" }} />
+                          )}
+                        </IconButtonMUI>
+                        <IconButtonMUI
+                          sx={{ ml: "2px", mr: "2px" }}
+                          onClick={toggleVolume}
+                        >
+                          {muted ? (
+                            <VolumeOffIcon style={{ color: "#fff" }} />
+                          ) : (
+                            <VolumeUpIcon style={{ color: "#fff" }} />
+                          )}
+                        </IconButtonMUI>
+                        <p
+                          style={{
+                            fontWeight: 200,
+                            fontSize: 10,
+                          }}
+                        >
+                          {convertHMS(String(currentTime))} /{" "}
+                          {convertHMS(String(currentDuration))}
+                        </p>
+                      </Box>
+
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        {" "}
+                        {isLive && (
+                          <Button
+                            color="inherit"
+                            variant="text"
+                            onClick={() => {
+                              setCurrentTime(currentDuration);
+
+                              // @ts-ignore
+                              reactPlayer.current.internalPlayer.seekTo(
+                                currentDuration,
+                                true
+                              );
+                            }}
+                          >
+                            <ColourfulText
+                              style={{ fontWeight: 600, fontSize: 12 }}
+                            >
+                              Live
+                            </ColourfulText>
+                          </Button>
+                        )}
+                        <IconButtonMUI
+                          sx={{ ml: "2px", mr: "2px" }}
+                          onClick={toggleFullScreenVideo}
+                        >
+                          <IconButton
+                            src={isFullScreen ? FullScreenExit : FullScreen}
+                            width="25px"
+                            height="25px"
+                          />
+                        </IconButtonMUI>
+                      </Box>
+                    </Stack>
+                  </Box>
+                </>
+              ) : (
+                <LinearProgress color="inherit" />
+              )}
             </Box>
           </Box>
-        </Stack>
+        </Box>
+        <VirtualExhiButon />
+
+        <Box
+          sx={{
+            width: "100%",
+            pt: 0,
+            pb: 5,
+            position: "relative",
+            borderRadius: "10px",
+            overflow: "hidden",
+            color: "#F3FAFF",
+          }}
+        >
+          <Stack
+            sx={{
+              [theme.breakpoints.down("lg")]: {
+                flexDirection: "column",
+              },
+              [theme.breakpoints.up("lg")]: {
+                flexDirection: "row",
+              },
+            }}
+            justifyContent="space-between"
+          >
+            <RealtimeVisitor />
+
+            <Box sx={{ fontWeight: 600, display: "flex" }}>
+              <DivSection
+                style={{
+                  border: "2px #EDA525 solid",
+                  display: "flex",
+                  alignItems: "center",
+                  marginRight: "10px",
+                }}
+              >
+                <IconButton src={share} width="25px" height="25px" />
+                <p style={{ marginLeft: "5px" }}>Share</p>
+              </DivSection>
+              <Box style={{ position: "relative" }}>
+                <DivSection
+                  style={{
+                    border: "2px #6ABD45 solid",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <IconButton src={like} width="25px" height="25px" />
+                  <p style={{ marginLeft: "5px" }}>Like</p>
+                </DivSection>
+                {/* <p style={{ position: "absolute", bottom: -25, fontWeight: 500 }}>
+                <b>100</b> Visitors Likes
+              </p> */}
+              </Box>
+            </Box>
+          </Stack>
+        </Box>
+
+        <EventHighlights goTo={goTo} />
       </Box>
 
-      <EventHighlights goTo={goTo} />
-    </Container>
+      {windowWidth >= 1280 && (
+        <Box
+          sx={{
+            pt: 3,
+            [theme.breakpoints.up("lg")]: {
+              width: "25%",
+            },
+          }}
+        >
+          {" "}
+          <Commenter />
+        </Box>
+      )}
+    </Box>
   );
 }

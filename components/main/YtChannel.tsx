@@ -50,6 +50,8 @@ const ArtStepsButton = styled.button`
       background-position: 10% 0%;
     }
   }
+
+  margin-bottom: 20px;
 `;
 
 export default function YtChannel() {
